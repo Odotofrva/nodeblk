@@ -1,0 +1,40 @@
+{
+  "guides": [
+    {
+      "id": 1,
+      "title": "Police Stop",
+      "label": "Guide 01",
+      "content": "Stay calm. Keep your hands visible. Do not make sudden movements. Speak clearly and respectfully. Ask if you are free to leave. Do not physically resist. Try to remember badge numbers, vehicle details, and location if needed later."
+    },
+    {
+      "id": 2,
+      "title": "Medical Emergency",
+      "label": "Guide 02",
+      "content": "Call emergency services immediately. Give your exact location first. Check whether the person is breathing and responsive. If there is visible bleeding, apply firm pressure with clean cloth or clothing. Stay with the person until help arrives if safe to do so."
+    },
+    {
+      "id": 3,
+      "title": "Power Outage",
+      "label": "Guide 03",
+      "content": "Use flashlights instead of candles if possible. Preserve battery by dimming your phone screen and closing unused apps. Keep refrigerator and freezer doors closed. Check on children, elders, and neighbors who may need help."
+    },
+    {
+      "id": 4,
+      "title": "Unsafe Situation",
+      "label": "Guide 04",
+      "content": "Move toward a well-lit, populated area. Contact someone you trust and share your live location if available. Avoid isolated streets or stairwells. Keep your phone accessible but stay aware of your surroundings."
+    },
+    {
+      "id": 5,
+      "title": "Fire In Building",
+      "label": "Guide 05",
+      "content": "Leave immediately if it is safe. Do not use elevators. Stay low if smoke is present. Feel doors with the back of your hand before opening. Call emergency services once you are outside and away from danger."
+    },
+    {
+      "id": 6,
+      "title": "Severe Weather",
+      "label": "Guide 06",
+      "content": "Move indoors as soon as possible. Stay away from windows. Charge your devices if there is time. Keep a flashlight, water, and essential meds nearby. Follow local alerts and shelter instructions."
+    }
+  ]
+}
