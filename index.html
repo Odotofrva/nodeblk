@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeBlk V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080808;
+      --bg-2: #0d0d0d;
+      --panel: #131313;
+      --panel-2: #181818;
+      --panel-3: #1f1f1f;
+      --line: rgba(255,255,255,0.08);
+      --line-strong: rgba(255,122,0,0.22);
+      --text: #f4f4f4;
+      --muted: #9d9d9d;
+      --accent: #ff7a00;
+      --accent-soft: rgba(255,122,0,0.12);
+      --danger-soft: rgba(255,77,77,0.10);
+      --radius: 20px;
+      --shadow: 0 18px 50px rgba(0,0,0,0.42);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #050505;
+      color: var(--text);
+      font-family: "IBM Plex Mono", monospace;
+      min-height: 100%;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .device {
+      width: 100%;
+      max-width: 430px;
+      min-height: calc(100vh - 24px);
+      background:
+        radial-gradient(circle at top right, rgba(255,122,0,0.14), transparent 35%),
+        linear-gradient(180deg, #0b0b0b 0%, #080808 100%);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px 8px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .status-left,
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand {
+      font-family: "Orbitron", sans-serif;
+      color: var(--text);
+      letter-spacing: 0.08em;
+      font-size: 0.9rem;
+    }
+
+    .signal-pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--accent);
+      font-size: 0.66rem;
+    }
+
+    .app-content {
+      flex: 1;
+      overflow: auto;
+      padding: 18px;
+      padding-bottom: 92px;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeUp 0.22s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1,
+    .section-title,
+    .detail-title {
+      margin: 0 0 8px;
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      font-size: 1.15rem;
+    }
+
+    .hero p,
+    .muted,
+    .detail-body {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.84rem;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: linear-gradient(180deg, #151515, #101010);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 12px;
+    }
+
+    .stat-value {
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #161616, #101010);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px;
+      min-height: 140px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .card:hover,
+    .card:active {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background: linear-gradient(180deg, #1a1a1a, #111111);
+    }
+
+    .card-icon {
+      font-size: 1.7rem;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 0.92rem;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.76rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .back-btn,
+    .action-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .back-btn:hover,
+    .action-btn:hover {
+      border-color: var(--line-strong);
+    }
+
+    .screen-title {
+      font-family: "Orbitron", sans-serif;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .search-wrap {
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #101010;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 14px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--line-strong);
+    }
+
+    .guide-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .guide-card {
+      background: linear-gradient(180deg, #151515, #101010);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 15px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .guide-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+    }
+
+    .mini-label {
+      display: inline-block;
+      font-size: 0.66rem;
+      color: var(--accent);
+      margin-bottom: 8px;
+      border: 1px solid rgba(255,122,0,0.18);
+      background: var(--accent-soft);
+      padding: 5px 8px;
+      border-radius: 999px;
+    }
+
+    .guide-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.92rem;
+    }
+
+    .guide-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .alert-box {
+      background: var(--danger-soft);
+      border: 1px solid rgba(255,77,77,0.16);
+      color: #ffdede;
+      border-radius: 18px;
+      padding: 13px 14px;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .detail-card {
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .detail-meta {
+      margin-bottom: 10px;
+    }
+
+    .detail-body {
+      color: #d4d4d4;
+      white-space: pre-line;
+    }
+
+    .placeholder-box {
+      background: linear-gradient(180deg, #151515, #101010);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .placeholder-box h3 {
+      margin: 0 0 8px;
+      font-size: 0.9rem;
+    }
+
+    .placeholder-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      background: rgba(18,18,18,0.96);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px;
+      gap: 6px;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 16px;
+      padding: 10px 6px;
+      font-family: inherit;
+      cursor: pointer;
+      font-size: 0.68rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 18px 10px;
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+    }
+
+    @media (max-width: 380px) {
+      .grid,
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="device">
+    <div class="statusbar">
+      <div class="status-left">
+        <div class="brand">NodeBlk</div>
+        <div id="clock">--:--</div>
+      </div>
+      <div class="status-right">
+        <div class="signal-pill">Offline Ready</div>
+      </div>
+    </div>
+
+    <main class="app-content">
+      <!-- HOME -->
+      <section id="homeScreen" class="screen active">
+        <div class="hero">
+          <h1>Stay Ready. Move Smart.</h1>
+          <p>
+            NodeBlk is your offline-first community survival interface for quick guides,
+            critical knowledge, and trusted resource access.
+          </p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value" id="guideCount">0</div>
+            <div class="stat-label">Guides Loaded</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">V2</div>
+            <div class="stat-label">UI Build</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Local First</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card" onclick="openEmergency()">
+            <div class="card-icon">🚨</div>
+            <h3>Emergency</h3>
+            <p>Search, browse, and open offline emergency response guides.</p>
+          </div>
+
+          <div class="card" onclick="showMainScreen('knowledgeScreen')">
+            <div class="card-icon">📚</div>
+            <h3>Knowledge</h3>
+            <p>Future lessons for survival, tech, and practical community skills.</p>
+          </div>
+
+          <div class="card" onclick="showMainScreen('communityScreen')">
+            <div class="card-icon">📡</div>
+            <h3>Community</h3>
+            <p>Future trusted contacts, local hubs, and mutual support resources.</p>
+          </div>
+
+          <div class="card" onclick="showMainScreen('settingsScreen')">
+            <div class="card-icon">⚙️</div>
+            <h3>Settings</h3>
+            <p>Manage saved data, appearance, and system preferences later.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- EMERGENCY LIST -->
+      <section id="emergencyScreen" class="screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
+          <h2 class="screen-title">Emergency Guides</h2>
+        </div>
+
+        <div class="alert-box">
+          Demo prototype content for NodeBlk MVP. Replace with verified guides later.
+        </div>
+
+        <div class="search-wrap">
+          <input
+            id="guideSearch"
+            class="search-input"
+            type="text"
+            placeholder="Search guides..."
+            oninput="filterGuides()"
+          />
+        </div>
+
+        <div id="guideList" class="guide-list"></div>
+      </section>
+
+      <!-- EMERGENCY DETAIL -->
+      <section id="guideDetailScreen" class="screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showMainScreen('emergencyScreen')">←</button>
+          <h2 class="screen-title">Guide Detail</h2>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-meta">
+            <span id="detailLabel" class="mini-label">Guide</span>
+          </div>
+          <h2 id="detailTitle" class="detail-title">Title</h2>
+          <p id="detailBody" class="detail-body">Guide content loads here.</p>
+        </div>
+      </section>
+
+      <!-- KNOWLEDGE -->
+      <section id="knowledgeScreen" class="screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
+          <h2 class="screen-title">Knowledge</h2>
+        </div>
+
+        <div class="placeholder-box">
+          <h3>Offline Library</h3>
+          <p>
+            This section can hold local JSON content for tech basics, preparedness,
+            financial literacy, first aid, and more.
+          </p>
+        </div>
+      </section>
+
+      <!-- COMMUNITY -->
+      <section id="communityScreen" class="screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
+          <h2 class="screen-title">Community</h2>
+        </div>
+
+        <div class="placeholder-box">
+          <h3>Community Network</h3>
+          <p>
+            Later this can include trusted contacts, local clinics, support groups,
+            legal help, food access, and neighborhood resources.
+          </p>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settingsScreen" class="screen">
+        <div class="screen-header">
+          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
+          <h2 class="screen-title">Settings</h2>
+        </div>
+
+        <div class="placeholder-box">
+          <h3>System Preferences</h3>
+          <p>
+            Future options: theme switching, export/import guides, saved favorites,
+            battery mode, and offline sync settings.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-target="homeScreen" onclick="showMainScreen('homeScreen')">
+        <span>⌂</span>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-target="emergencyScreen" onclick="openEmergency()">
+        <span>🚨</span>
+        <span>Emergency</span>
+      </button>
+      <button class="nav-btn" data-target="knowledgeScreen" onclick="showMainScreen('knowledgeScreen')">
+        <span>📚</span>
+        <span>Library</span>
+      </button>
+      <button class="nav-btn" data-target="settingsScreen" onclick="showMainScreen('settingsScreen')">
+        <span>⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    let emergencyGuides = [];
+    let guidesLoaded = false;
+
+    function updateClock() {
+      const el = document.getElementById("clock");
+      const now = new Date();
+      el.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function setActiveNav(screenId) {
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.target === screenId);
+      });
+    }
+
+    function showMainScreen(screenId) {
+      document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+      });
+
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.add("active");
+      }
+
+      const navTarget = screenId === "guideDetailScreen" ? "emergencyScreen" : screenId;
+      setActiveNav(navTarget);
+      document.querySelector(".app-content").scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function loadEmergencyGuides() {
+      if (guidesLoaded) return;
+
+      const list = document.getElementById("guideList");
+
+      try {
+        const response = await fetch("data/emergency.json");
+        const data = await response.json();
+        emergencyGuides = data.guides || [];
+        guidesLoaded = true;
+        document.getElementById("guideCount").textContent = emergencyGuides.length;
+        renderGuides(emergencyGuides);
+      } catch (error) {
+        list.innerHTML = `
+          <div class="empty-state">
+            Failed to load local emergency guides.
+          </div>
+        `;
+        console.error(error);
+      }
+    }
+
+    function renderGuides(guides) {
+      const list = document.getElementById("guideList");
+
+      if (!guides.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            No guides matched your search.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = guides.map(guide => `
+        <div class="guide-card" onclick="openGuide(${guide.id})">
+          <span class="mini-label">${guide.label}</span>
+          <h3>${guide.title}</h3>
+          <p>${guide.content.slice(0, 95)}${guide.content.length > 95 ? "..." : ""}</p>
+        </div>
+      `).join("");
+    }
+
+    function filterGuides() {
+      const query = document.getElementById("guideSearch").value.trim().toLowerCase();
+
+      const filtered = emergencyGuides.filter(guide =>
+        guide.title.toLowerCase().includes(query) ||
+        guide.content.toLowerCase().includes(query) ||
+        guide.label.toLowerCase().includes(query)
+      );
+
+      renderGuides(filtered);
+    }
+
+    async function openEmergency() {
+      await loadEmergencyGuides();
+      showMainScreen("emergencyScreen");
+    }
+
+    function openGuide(id) {
+      const guide = emergencyGuides.find(item => item.id === id);
+      if (!guide) return;
+
+      document.getElementById("detailLabel").textContent = guide.label;
+      document.getElementById("detailTitle").textContent = guide.title;
+      document.getElementById("detailBody").textContent = guide.content;
+
+      showMainScreen("guideDetailScreen");
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setActiveNav("homeScreen");
+      loadEmergencyGuides();
+    });
+  </script>
+</body>
+</html>
