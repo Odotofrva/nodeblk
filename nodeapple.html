@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeBlk — Portable Intelligence</title>
+  <meta
+    name="description"
+    content="NodeBlk by RoboTechi — a pocket-sized device built for offline knowledge, survival guidance, and real-world utility."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f6f6f7;
+      --panel: #ffffff;
+      --text: #111111;
+      --muted: #6b6b73;
+      --line: rgba(17, 17, 17, 0.08);
+      --accent: #ff7a00;
+      --accent-deep: #dc6803;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      --radius-xl: 36px;
+      --radius-lg: 24px;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: saturate(180%) blur(16px);
+      background: rgba(255, 255, 255, 0.78);
+      border-bottom: 1px solid rgba(17,17,17,0.06);
+    }
+
+    .nav {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #ffb066);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+    }
+
+    .brand small {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: white;
+      box-shadow: 0 12px 30px rgba(17,17,17,0.16);
+    }
+
+    .btn-secondary {
+      background: rgba(17,17,17,0.05);
+      color: var(--text);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 76px 0 52px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,122,0,0.14), transparent 35%),
+        linear-gradient(180deg, #ffffff 0%, #fbfbfc 100%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255,122,0,0.08);
+      color: var(--accent-deep);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(255,122,0,0.12);
+    }
+
+    .hero-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+      min-height: 78vh;
+    }
+
+    .hero-copy h1 {
+      margin: 18px 0 18px;
+      font-size: clamp(48px, 8vw, 106px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+    }
+
+    .hero-copy .subhead {
+      max-width: 700px;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.45;
+      letter-spacing: -0.03em;
+      color: #2f2f34;
+      margin: 0 0 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .device-stage {
+      position: relative;
+      min-height: 620px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .device-glow {
+      position: absolute;
+      inset: auto 50% 16% auto;
+      transform: translateX(50%);
+      width: 480px;
+      height: 480px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,122,0,0.22), transparent 62%);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+
+    .device {
+      position: relative;
+      width: min(380px, 88%);
+      aspect-ratio: 0.68 / 1;
+      background: linear-gradient(180deg, #1c1c1f 0%, #0d0d0f 100%);
+      border-radius: 38px;
+      padding: 16px;
+      box-shadow: 0 36px 80px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+
+    .device::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .device-screen {
+      height: 72%;
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)),
+        radial-gradient(circle at top, rgba(255,122,0,0.30), transparent 40%),
+        linear-gradient(180deg, #18191d 0%, #111216 100%);
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 18px;
+    }
+
+    .screen-ui {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #f5f5f6;
+    }
+
+    .screen-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-family: "IBM Plex Mono", monospace;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .screen-card {
+      margin-top: 18px;
+      padding: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      backdrop-filter: blur(12px);
+    }
+
+    .screen-card h3 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .screen-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .screen-modules {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .screen-module {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 82px;
+    }
+
+    .screen-module span {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.58);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .screen-module strong {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .device-controls {
+      height: 28%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 18px 10px 6px;
+    }
+
+    .control-pad,
+    .control-center,
+    .control-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .dpad {
+      width: 94px;
+      height: 94px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #19191c, #101013);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .dpad::before,
+    .dpad::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+    }
+
+    .dpad::before {
+      width: 24px;
+      height: 74px;
+      top: 10px;
+      left: 35px;
+    }
+
+    .dpad::after {
+      width: 74px;
+      height: 24px;
+      top: 35px;
+      left: 10px;
+    }
+
+    .center-pills {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill {
+      width: 14px;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 44px);
+      grid-auto-rows: 44px;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      border-radius: 999px;
+      background: linear-gradient(180deg, #292a2f, #17181c);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .scroll-note {
+      padding: 18px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section {
+      padding: 96px 0;
+    }
+
+    .section-head {
+      max-width: 860px;
+      margin: 0 auto 44px;
+      text-align: center;
+    }
+
+    .section-head h2 {
+      margin: 0 0 12px;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: 0.97;
+      letter-spacing: -0.06em;
+    }
+
+    .section-head p {
+      margin: 0;
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.5;
+      color: #404046;
+      letter-spacing: -0.03em;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .feature-card {
+      position: relative;
+      background: linear-gradient(180deg, #ffffff, #f7f7f8);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      min-height: 530px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-label {
+      display: inline-block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin-bottom: 12px;
+    }
+
+    .feature-card h3 {
+      margin: 0 0 14px;
+      font-size: clamp(30px, 3vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .feature-card p {
+      margin: 0;
+      max-width: 520px;
+      color: #44444b;
+      font-size: 18px;
+      line-height: 1.6;
+      letter-spacing: -0.02em;
+    }
+
+    .feature-visual {
+      position: absolute;
+      left: 32px;
+      right: 32px;
+      bottom: 32px;
+      height: 250px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #15161a, #0d0e11);
+      overflow: hidden;
+    }
+
+    .feature-grid-ui {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 20px;
+      height: 100%;
+    }
+
+    .mini-card {
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .mini-card span {
+      display: block;
+      font-size: 11px;
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.54);
+      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .map-visual {
+      position: absolute;
+      inset: 24px 24px 24px 24px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,122,0,0.20), transparent 28%),
+        linear-gradient(135deg, #131418, #0b0c10);
+    }
+
+    .map-visual::before,
+    .map-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 42px 42px;
+      opacity: 0.35;
+    }
+
+    .map-route {
+      position: absolute;
+      width: 64%;
+      height: 42%;
+      top: 28%;
+      left: 18%;
+      border: 3px solid rgba(255,122,0,0.7);
+      border-color: rgba(255,122,0,0.0) rgba(255,122,0,0.0) rgba(255,122,0,0.7) rgba(255,122,0,0.7);
+      border-radius: 0 0 28px 28px;
+      transform: skewX(-14deg);
+      filter: drop-shadow(0 0 18px rgba(255,122,0,0.22));
+    }
+
+    .map-pin {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 10px rgba(255,122,0,0.12);
+    }
+
+    .map-pin.one { top: 32%; left: 24%; }
+    .map-pin.two { bottom: 26%; right: 22%; }
+
+    .full-bleed {
+      background: linear-gradient(180deg, #101114, #17181c);
+      color: white;
+    }
+
+    .full-bleed .section-head p,
+    .full-bleed .spec-copy p,
+    .full-bleed .story-copy p,
+    .full-bleed .spec-list li,
+    .full-bleed .story-kicker {
+      color: rgba(255,255,255,0.75);
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .story-visual {
+      min-height: 640px;
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,122,0,0.22), transparent 30%),
+        linear-gradient(180deg, #1d1f24 0%, #0e0f12 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.24);
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .story-device-stack {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .story-device-stack .device {
+      transform: scale(0.9) rotate(-8deg) translateX(-40px);
+      opacity: 0.88;
+    }
+
+    .story-device-stack .device:nth-child(2) {
+      position: absolute;
+      transform: scale(0.95) rotate(10deg) translateX(72px) translateY(22px);
+      opacity: 0.58;
+      filter: blur(0.4px);
+    }
+
+    .story-kicker {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .story-copy h2 {
+      margin: 0 0 16px;
+      font-size: clamp(40px, 5vw, 76px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .story-copy p {
+      margin: 0 0 18px;
+      font-size: 20px;
+      line-height: 1.65;
+      letter-spacing: -0.02em;
+    }
+
+    .specs-wrap {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .spec-copy h2 {
+      margin: 0 0 12px;
+      font-size: clamp(38px, 4vw, 62px);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    .spec-copy p {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .spec-panel {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 30px;
+      overflow: hidden;
+    }
+
+    .spec-row {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 20px;
+      padding: 22px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .spec-row:first-child { border-top: 0; }
+
+    .spec-row span {
+      color: rgba(255,255,255,0.52);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .spec-row strong {
+      font-size: 17px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .cta {
+      padding: 110px 0 120px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, #faf7f3 100%);
+    }
+
+    .cta-card {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 54px 28px;
+      border-radius: 36px;
+      background: linear-gradient(180deg, #ffffff, #f7f3ee);
+      border: 1px solid rgba(17,17,17,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .cta-card h2 {
+      margin: 0 0 12px;
+      font-size: clamp(38px, 6vw, 78px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .cta-card p {
+      margin: 0 auto 24px;
+      max-width: 700px;
+      color: #44444b;
+      font-size: 20px;
+      line-height: 1.65;
+      letter-spacing: -0.02em;
+    }
+
+    footer {
+      padding: 28px 0 42px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1060px) {
+      .hero-wrap,
+      .split,
+      .story-grid,
+      .specs-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .device-stage {
+        min-height: auto;
+      }
+
+      .story-visual {
+        min-height: 520px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .hero-wrap {
+        min-height: auto;
+        gap: 28px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(46px, 18vw, 76px);
+      }
+
+      .hero-copy .subhead,
+      .section-head p,
+      .story-copy p,
+      .spec-copy p,
+      .cta-card p {
+        font-size: 17px;
+      }
+
+      .feature-card {
+        min-height: 500px;
+        padding: 24px;
+      }
+
+      .feature-visual {
+        left: 24px;
+        right: 24px;
+        bottom: 24px;
+        height: 220px;
+      }
+
+      .device {
+        width: min(330px, 96%);
+      }
+
+      .section {
+        padding: 76px 0;
+      }
+
+      .spec-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-card {
+        padding: 42px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="#top" class="brand" aria-label="NodeBlk home">
+        <div class="brand-mark"></div>
+        <div>
+          NodeBlk
+          <small>by RoboTechi</small>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#story">Why NodeBlk</a>
+        <a href="#specs">Specs</a>
+      </nav>
+
+      <a class="btn btn-secondary" href="#cta">Stay Updated</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" id="overview">
+      <div class="container hero-wrap">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            Portable intelligence by RoboTechi
+          </div>
+
+          <h1>NodeBlk</h1>
+          <p class="subhead">
+            A pocket-sized device built for offline knowledge, emergency guidance,
+            and real-world utility — designed to keep critical tools close when
+            connection, clarity, and time matter most.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#features" class="btn btn-primary">Explore NodeBlk</a>
+            <a href="#story" class="btn btn-secondary">See the vision</a>
+          </div>
+
+          <div class="hero-meta">
+            <span>Offline-first</span>
+            <span>Embedded utility</span>
+            <span>Community-focused design</span>
+          </div>
+        </div>
+
+        <div class="device-stage" aria-hidden="true">
+          <div class="device-glow"></div>
+          <div class="device">
+            <div class="device-screen">
+              <div class="screen-ui">
+                <div>
+                  <div class="screen-top">
+                    <span>NODEBLK OS</span>
+                    <span>87%</span>
+                  </div>
+
+                  <div class="screen-card">
+                    <h3>Guidance, ready.</h3>
+                    <p>
+                      Fast access to survival notes, local resources, essential references,
+                      and portable knowledge systems.
+                    </p>
+                  </div>
+
+                  <div class="screen-modules">
+                    <div class="screen-module">
+                      <span>Mode</span>
+                      <strong>Offline Library</strong>
+                    </div>
+                    <div class="screen-module">
+                      <span>Access</span>
+                      <strong>Emergency Guides</strong>
+                    </div>
+                    <div class="screen-module">
+                      <span>Sync</span>
+                      <strong>Low-data Ready</strong>
+                    </div>
+                    <div class="screen-module">
+                      <span>Focus</span>
+                      <strong>Real-world Utility</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="screen-top">
+                  <span>Portable Intelligence</span>
+                  <span>RBT-01</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="device-controls">
+              <div class="control-pad"><div class="dpad"></div></div>
+              <div class="control-center">
+                <div class="center-pills">
+                  <div class="pill"></div>
+                  <div class="pill"></div>
+                </div>
+              </div>
+              <div class="control-actions">
+                <div class="actions">
+                  <div class="action-btn"></div>
+                  <div class="action-btn"></div>
+                  <div class="action-btn"></div>
+                  <div class="action-btn"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container scroll-note">Built for access. Built for action.</div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <h2>Built for the moments that matter.</h2>
+          <p>
+            NodeBlk combines portable hardware with focused software to deliver
+            knowledge, clarity, and guidance without unnecessary friction.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="feature-card">
+            <span class="feature-label">Offline-first system</span>
+            <h3>Your essential library, always within reach.</h3>
+            <p>
+              Access curated guides, survival resources, how-to content, and critical
+              reference material even when internet access is limited or unavailable.
+            </p>
+            <div class="feature-visual">
+              <div class="feature-grid-ui">
+                <div class="mini-card">
+                  <span>Library</span>
+                  <strong>Emergency steps, field notes, and practical references</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Knowledge</span>
+                  <strong>Community-centered information with fast on-device access</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Utility</span>
+                  <strong>Designed for low-friction use under pressure</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Updates</span>
+                  <strong>Expandable with future data packs and new modules</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-label">Real-world guidance</span>
+            <h3>Navigation for uncertain situations.</h3>
+            <p>
+              NodeBlk is imagined as a device that helps people orient themselves quickly,
+              act intentionally, and move with more confidence during unfamiliar moments.
+            </p>
+            <div class="feature-visual">
+              <div class="map-visual">
+                <div class="map-route"></div>
+                <div class="map-pin one"></div>
+                <div class="map-pin two"></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section full-bleed" id="story">
+      <div class="container story-grid">
+        <div class="story-copy">
+          <div class="story-kicker">Why NodeBlk</div>
+          <h2>Technology should serve people under pressure.</h2>
+          <p>
+            NodeBlk is not just about hardware. It is about access — to guidance,
+            useful knowledge, and dependable tools in a format that feels immediate,
+            personal, and ready.
+          </p>
+          <p>
+            The vision is simple: build a device that carries real utility, respects
+            limited connectivity, and feels like something you can trust when your phone,
+            signal, or surroundings are working against you.
+          </p>
+        </div>
+
+        <div class="story-visual" aria-hidden="true">
+          <div class="story-device-stack">
+            <div class="device">
+              <div class="device-screen">
+                <div class="screen-ui">
+                  <div>
+                    <div class="screen-top"><span>ACCESS</span><span>LOCAL</span></div>
+                    <div class="screen-card">
+                      <h3>Find clarity.</h3>
+                      <p>Focused information, less noise, and a tighter path to action.</p>
+                    </div>
+                  </div>
+                  <div class="screen-top"><span>NodeBlk</span><span>Ready</span></div>
+                </div>
+              </div>
+              <div class="device-controls">
+                <div class="control-pad"><div class="dpad"></div></div>
+                <div class="control-center"><div class="center-pills"><div class="pill"></div><div class="pill"></div></div></div>
+                <div class="control-actions"><div class="actions"><div class="action-btn"></div><div class="action-btn"></div><div class="action-btn"></div><div class="action-btn"></div></div></div>
+              </div>
+            </div>
+            <div class="device">
+              <div class="device-screen"></div>
+              <div class="device-controls"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section full-bleed" id="specs">
+      <div class="container specs-wrap">
+        <div class="spec-copy">
+          <h2>A prototype direction, built with purpose.</h2>
+          <p>
+            These are ideal launch concepts for the NodeBlk product page. You can refine
+            the exact internals later, but this layout gives the device a premium,
+            believable, flagship presentation right now.
+          </p>
+        </div>
+
+        <div class="spec-panel">
+          <div class="spec-row">
+            <span>Category</span>
+            <strong>Pocket utility device / embedded knowledge system</strong>
+          </div>
+          <div class="spec-row">
+            <span>Core focus</span>
+            <strong>Offline access, emergency support, practical references, portable guidance</strong>
+          </div>
+          <div class="spec-row">
+            <span>Interface</span>
+            <strong>Compact display, tactile controls, low-distraction UI</strong>
+          </div>
+          <div class="spec-row">
+            <span>System vision</span>
+            <strong>Lightweight embedded platform with expandable content modules</strong>
+          </div>
+          <div class="spec-row">
+            <span>Designed by</span>
+            <strong>RoboTechi within the OdotNYC ecosystem</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="cta">
+      <div class="container">
+        <div class="cta-card">
+          <h2>NodeBlk is just getting started.</h2>
+          <p>
+            A product vision rooted in portable intelligence, community-centered utility,
+            and a sharper relationship between people and technology.
+          </p>
+          <div class="hero-actions" style="justify-content:center; margin-bottom:0;">
+            <a href="#top" class="btn btn-primary">Back to top</a>
+            <a href="#overview" class="btn btn-secondary">Review overview</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <div>© 2026 RoboTechi. NodeBlk concept page.</div>
+      <div>Portable Intelligence. Real-World Utility.</div>
+    </div>
+  </footer>
+</body>
+</html>
