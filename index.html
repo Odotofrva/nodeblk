@@ -3,694 +3,1278 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NodeBlk V2</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <title>NodeBlk — Community Resilience Device</title>
+  <meta
+    name="description"
+    content="NodeBlk by RoboTechi — a handheld, offline-first resilience device with a display and keyboard, built for emergency guidance, community preparedness, and real-world utility."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #080808;
-      --bg-2: #0d0d0d;
-      --panel: #131313;
-      --panel-2: #181818;
-      --panel-3: #1f1f1f;
-      --line: rgba(255,255,255,0.08);
-      --line-strong: rgba(255,122,0,0.22);
-      --text: #f4f4f4;
-      --muted: #9d9d9d;
+      --bg: #ffffff;
+      --bg-soft: #f6f6f7;
+      --panel: #ffffff;
+      --text: #111111;
+      --muted: #6b6b73;
+      --line: rgba(17, 17, 17, 0.08);
       --accent: #ff7a00;
-      --accent-soft: rgba(255,122,0,0.12);
-      --danger-soft: rgba(255,77,77,0.10);
-      --radius: 20px;
-      --shadow: 0 18px 50px rgba(0,0,0,0.42);
+      --accent-deep: #dc6803;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      --radius-xl: 36px;
+      --radius-lg: 24px;
+      --max: 1240px;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #050505;
-      color: var(--text);
-      font-family: "IBM Plex Mono", monospace;
-      min-height: 100%;
-    }
-
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      display: flex;
-      justify-content: center;
-      padding: 12px;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    .device {
-      width: 100%;
-      max-width: 430px;
-      min-height: calc(100vh - 24px);
-      background:
-        radial-gradient(circle at top right, rgba(255,122,0,0.14), transparent 35%),
-        linear-gradient(180deg, #0b0b0b 0%, #080808 100%);
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
     }
 
-    .statusbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 18px 8px;
-      font-size: 0.72rem;
-      color: var(--muted);
-      border-bottom: 1px solid var(--line);
-      background: rgba(10,10,10,0.92);
-      backdrop-filter: blur(10px);
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 999;
+      backdrop-filter: saturate(180%) blur(16px);
+      background: rgba(255, 255, 255, 0.78);
+      border-bottom: 1px solid rgba(17,17,17,0.06);
     }
 
-    .status-left,
-    .status-right {
+    .nav {
+      min-height: 68px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 20px;
     }
 
     .brand {
-      font-family: "Orbitron", sans-serif;
-      color: var(--text);
-      letter-spacing: 0.08em;
-      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
     }
 
-    .signal-pill {
-      padding: 5px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--accent);
-      font-size: 0.66rem;
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #ffb066);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
     }
 
-    .app-content {
-      flex: 1;
-      overflow: auto;
-      padding: 18px;
-      padding-bottom: 92px;
-    }
-
-    .screen {
-      display: none;
-      animation: fadeUp 0.22s ease;
-    }
-
-    .screen.active {
+    .brand small {
       display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+
+    .brand-wordmark,
+    .hero-wordmark {
+      font-family: "Orbitron", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: none;
+    }
+
+    .brand-wordmark {
+      display: inline-block;
+      font-size: 1rem;
+      line-height: 1;
+      text-shadow: 0 0 18px rgba(255,122,0,0.14);
+    }
+
+    .hero-wordmark {
+      display: inline-block;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 26px rgba(255,122,0,0.18);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: white;
+      box-shadow: 0 12px 30px rgba(17,17,17,0.16);
+    }
+
+    .btn-secondary {
+      background: rgba(17,17,17,0.05);
+      color: var(--text);
     }
 
     .hero {
-      background: linear-gradient(180deg, var(--panel-2), var(--panel));
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 18px;
-      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      padding: 76px 0 52px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,122,0,0.14), transparent 35%),
+        linear-gradient(180deg, #ffffff 0%, #fbfbfc 100%);
     }
 
-    .hero h1,
-    .section-title,
-    .detail-title {
-      margin: 0 0 8px;
-      font-family: "Orbitron", sans-serif;
-      letter-spacing: 0.04em;
-    }
-
-    .hero h1 {
-      font-size: 1.15rem;
-    }
-
-    .hero p,
-    .muted,
-    .detail-body {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.84rem;
-    }
-
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .stat-card {
-      background: linear-gradient(180deg, #151515, #101010);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 14px 12px;
-    }
-
-    .stat-value {
-      font-size: 1rem;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .card {
-      background: linear-gradient(180deg, #161616, #101010);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 16px;
-      min-height: 140px;
-      cursor: pointer;
-      transition: 0.18s ease;
-    }
-
-    .card:hover,
-    .card:active {
-      transform: translateY(-2px);
-      border-color: var(--line-strong);
-      background: linear-gradient(180deg, #1a1a1a, #111111);
-    }
-
-    .card-icon {
-      font-size: 1.7rem;
-      display: inline-block;
-      margin-bottom: 12px;
-    }
-
-    .card h3 {
-      margin: 0 0 6px;
-      font-size: 0.92rem;
-    }
-
-    .card p {
-      margin: 0;
-      font-size: 0.76rem;
-      line-height: 1.55;
-      color: var(--muted);
-    }
-
-    .screen-header {
-      display: flex;
+    .eyebrow {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .back-btn,
-    .action-btn {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .back-btn:hover,
-    .action-btn:hover {
-      border-color: var(--line-strong);
-    }
-
-    .screen-title {
-      font-family: "Orbitron", sans-serif;
-      font-size: 1rem;
-      margin: 0;
-    }
-
-    .search-wrap {
-      margin-bottom: 14px;
-    }
-
-    .search-input {
-      width: 100%;
-      background: #101010;
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px 14px;
-      font-family: inherit;
-      outline: none;
-    }
-
-    .search-input:focus {
-      border-color: var(--line-strong);
-    }
-
-    .guide-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .guide-card {
-      background: linear-gradient(180deg, #151515, #101010);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 15px;
-      cursor: pointer;
-      transition: 0.18s ease;
-    }
-
-    .guide-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--line-strong);
-    }
-
-    .mini-label {
-      display: inline-block;
-      font-size: 0.66rem;
-      color: var(--accent);
-      margin-bottom: 8px;
-      border: 1px solid rgba(255,122,0,0.18);
-      background: var(--accent-soft);
-      padding: 5px 8px;
+      gap: 8px;
+      padding: 9px 14px;
       border-radius: 999px;
+      background: rgba(255,122,0,0.08);
+      color: var(--accent-deep);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .guide-card h3 {
-      margin: 0 0 6px;
-      font-size: 0.92rem;
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(255,122,0,0.12);
     }
 
-    .guide-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.55;
-    }
-
-    .alert-box {
-      background: var(--danger-soft);
-      border: 1px solid rgba(255,77,77,0.16);
-      color: #ffdede;
-      border-radius: 18px;
-      padding: 13px 14px;
-      font-size: 0.78rem;
-      line-height: 1.55;
-      margin-bottom: 14px;
-    }
-
-    .detail-card {
-      background: linear-gradient(180deg, var(--panel-2), var(--panel));
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 18px;
-    }
-
-    .detail-meta {
-      margin-bottom: 10px;
-    }
-
-    .detail-body {
-      color: #d4d4d4;
-      white-space: pre-line;
-    }
-
-    .placeholder-box {
-      background: linear-gradient(180deg, #151515, #101010);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 18px;
-    }
-
-    .placeholder-box h3 {
-      margin: 0 0 8px;
-      font-size: 0.9rem;
-    }
-
-    .placeholder-box p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.55;
-    }
-
-    .bottom-nav {
-      position: absolute;
-      left: 14px;
-      right: 14px;
-      bottom: 14px;
-      background: rgba(18,18,18,0.96);
-      border: 1px solid var(--line);
-      border-radius: 22px;
+    .hero-wrap {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 8px;
-      gap: 6px;
-      backdrop-filter: blur(10px);
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+      min-height: 78vh;
     }
 
-    .nav-btn {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      border-radius: 16px;
-      padding: 10px 6px;
-      font-family: inherit;
-      cursor: pointer;
-      font-size: 0.68rem;
+    .hero-copy h1 {
+      margin: 18px 0 18px;
+      font-size: clamp(48px, 8vw, 106px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+    }
+
+    .hero-copy .subhead {
+      max-width: 700px;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.45;
+      letter-spacing: -0.03em;
+      color: #2f2f34;
+      margin: 0 0 28px;
+    }
+
+    .hero-actions {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .device-stage {
+      position: relative;
+      min-height: 620px;
+      display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .nav-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent);
+    .device-glow {
+      position: absolute;
+      inset: auto 50% 16% auto;
+      transform: translateX(50%);
+      width: 480px;
+      height: 480px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,122,0,0.22), transparent 62%);
+      filter: blur(10px);
+      pointer-events: none;
     }
 
-    .empty-state {
+    .device {
+      position: relative;
+      width: min(380px, 88%);
+      aspect-ratio: 0.68 / 1;
+      background: linear-gradient(180deg, #1c1c1f 0%, #0d0d0f 100%);
+      border-radius: 38px;
+      padding: 16px;
+      box-shadow: 0 36px 80px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.14);
+    }
+
+    .device::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .device-screen {
+      height: 72%;
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)),
+        radial-gradient(circle at top, rgba(255,122,0,0.30), transparent 40%),
+        linear-gradient(180deg, #18191d 0%, #111216 100%);
+      border: 1px solid rgba(255,255,255,0.07);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 18px;
+    }
+
+    .screen-ui {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #f5f5f6;
+    }
+
+    .screen-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-family: "IBM Plex Mono", monospace;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .screen-card {
+      margin-top: 18px;
+      padding: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      backdrop-filter: blur(12px);
+    }
+
+    .screen-card h3 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .screen-card p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .screen-modules {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .screen-module {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 82px;
+    }
+
+    .screen-module span {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.58);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .screen-module strong {
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .device-controls {
+      height: 28%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 18px 10px 6px;
+    }
+
+    .control-pad,
+    .control-center,
+    .control-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .dpad {
+      width: 94px;
+      height: 94px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #19191c, #101013);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .dpad::before,
+    .dpad::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+    }
+
+    .dpad::before {
+      width: 24px;
+      height: 74px;
+      top: 10px;
+      left: 35px;
+    }
+
+    .dpad::after {
+      width: 74px;
+      height: 24px;
+      top: 35px;
+      left: 10px;
+    }
+
+    .center-pills {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill {
+      width: 14px;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 44px);
+      grid-auto-rows: 44px;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      border-radius: 999px;
+      background: linear-gradient(180deg, #292a2f, #17181c);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .scroll-note {
+      padding: 18px 0 0;
       text-align: center;
       color: var(--muted);
-      padding: 18px 10px;
-      border: 1px dashed var(--line);
-      border-radius: 18px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    @media (max-width: 380px) {
-      .grid,
-      .stats-row {
+    .section {
+      padding: 96px 0;
+    }
+
+    .section-head {
+      max-width: 860px;
+      margin: 0 auto 44px;
+      text-align: center;
+    }
+
+    .section-head h2 {
+      margin: 0 0 12px;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: 0.97;
+      letter-spacing: -0.06em;
+    }
+
+    .section-head p {
+      margin: 0;
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.5;
+      color: #404046;
+      letter-spacing: -0.03em;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .feature-card {
+      position: relative;
+      background: linear-gradient(180deg, #ffffff, #f7f7f8);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      min-height: 530px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-label {
+      display: inline-block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin-bottom: 12px;
+    }
+
+    .feature-card h3 {
+      margin: 0 0 14px;
+      font-size: clamp(30px, 3vw, 44px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .feature-card p {
+      margin: 0;
+      max-width: 520px;
+      color: #44444b;
+      font-size: 18px;
+      line-height: 1.6;
+      letter-spacing: -0.02em;
+    }
+
+    .feature-visual {
+      position: absolute;
+      left: 32px;
+      right: 32px;
+      bottom: 32px;
+      height: 250px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #15161a, #0d0e11);
+      overflow: hidden;
+    }
+
+    .feature-grid-ui {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 20px;
+      height: 100%;
+    }
+
+    .mini-card {
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 16px;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .mini-card span {
+      display: block;
+      font-size: 11px;
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.54);
+      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .map-visual {
+      position: absolute;
+      inset: 24px 24px 24px 24px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,122,0,0.20), transparent 28%),
+        linear-gradient(135deg, #131418, #0b0c10);
+    }
+
+    .map-visual::before,
+    .map-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 42px 42px;
+      opacity: 0.35;
+    }
+
+    .map-route {
+      position: absolute;
+      width: 64%;
+      height: 42%;
+      top: 28%;
+      left: 18%;
+      border: 3px solid rgba(255,122,0,0.7);
+      border-color: rgba(255,122,0,0.0) rgba(255,122,0,0.0) rgba(255,122,0,0.7) rgba(255,122,0,0.7);
+      border-radius: 0 0 28px 28px;
+      transform: skewX(-14deg);
+      filter: drop-shadow(0 0 18px rgba(255,122,0,0.22));
+    }
+
+    .map-pin {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 10px rgba(255,122,0,0.12);
+    }
+
+    .map-pin.one { top: 32%; left: 24%; }
+    .map-pin.two { bottom: 26%; right: 22%; }
+
+    .full-bleed {
+      background: linear-gradient(180deg, #101114, #17181c);
+      color: white;
+    }
+
+    .full-bleed .section-head p,
+    .full-bleed .spec-copy p,
+    .full-bleed .story-copy p,
+    .full-bleed .spec-list li,
+    .full-bleed .story-kicker {
+      color: rgba(255,255,255,0.75);
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .story-visual {
+      min-height: 640px;
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,122,0,0.22), transparent 30%),
+        linear-gradient(180deg, #1d1f24 0%, #0e0f12 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.24);
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .story-device-stack {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .story-device-stack .device {
+      transform: scale(0.9) rotate(-8deg) translateX(-40px);
+      opacity: 0.88;
+    }
+
+    .story-device-stack .device:nth-child(2) {
+      position: absolute;
+      transform: scale(0.95) rotate(10deg) translateX(72px) translateY(22px);
+      opacity: 0.58;
+      filter: blur(0.4px);
+    }
+
+    .story-kicker {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .story-copy h2 {
+      margin: 0 0 16px;
+      font-size: clamp(40px, 5vw, 76px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .story-copy p {
+      margin: 0 0 18px;
+      font-size: 20px;
+      line-height: 1.65;
+      letter-spacing: -0.02em;
+    }
+
+    .specs-wrap {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .spec-copy h2 {
+      margin: 0 0 12px;
+      font-size: clamp(38px, 4vw, 62px);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+    }
+
+    .spec-copy p {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .spec-panel {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 30px;
+      overflow: hidden;
+    }
+
+    .spec-row {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 20px;
+      padding: 22px 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .spec-row:first-child { border-top: 0; }
+
+    .spec-row span {
+      color: rgba(255,255,255,0.52);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .spec-row strong {
+      font-size: 17px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .cta {
+      padding: 110px 0 120px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff 0%, #faf7f3 100%);
+    }
+
+    .cta-card {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 54px 28px;
+      border-radius: 36px;
+      background: linear-gradient(180deg, #ffffff, #f7f3ee);
+      border: 1px solid rgba(17,17,17,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .cta-card h2 {
+      margin: 0 0 12px;
+      font-size: clamp(38px, 6vw, 78px);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .cta-card p {
+      margin: 0 auto 24px;
+      max-width: 700px;
+      color: #44444b;
+      font-size: 20px;
+      line-height: 1.65;
+      letter-spacing: -0.02em;
+    }
+
+    footer {
+      padding: 28px 0 42px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1060px) {
+      .hero-wrap,
+      .split,
+      .story-grid,
+      .specs-wrap {
         grid-template-columns: 1fr;
+      }
+
+      .device-stage {
+        min-height: auto;
+      }
+
+      .story-visual {
+        min-height: 520px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .hero-wrap {
+        min-height: auto;
+        gap: 28px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(46px, 18vw, 76px);
+      }
+
+      .hero-copy .subhead,
+      .section-head p,
+      .story-copy p,
+      .spec-copy p,
+      .cta-card p {
+        font-size: 17px;
+      }
+
+      .feature-card {
+        min-height: 500px;
+        padding: 24px;
+      }
+
+      .feature-visual {
+        left: 24px;
+        right: 24px;
+        bottom: 24px;
+        height: 220px;
+      }
+
+      .device {
+        width: min(330px, 96%);
+      }
+
+      .section {
+        padding: 76px 0;
+      }
+
+      .spec-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-card {
+        padding: 42px 20px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="device">
-    <div class="statusbar">
-      <div class="status-left">
-        <div class="brand">NodeBlk</div>
-        <div id="clock">--:--</div>
-      </div>
-      <div class="status-right">
-        <div class="signal-pill">Offline Ready</div>
-      </div>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="#top" class="brand" aria-label="NodeBlk home">
+        <div class="brand-mark"></div>
+        <div>
+          <span class="brand-wordmark">NodeBlk</span>
+          <small>by RoboTechi</small>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#story">Why NodeBlk</a>
+        <a href="#prototype">Prototype</a>
+        <a href="#specs">Specs</a>
+        <a href="#investors">Investors</a>
+      </nav>
+
+      <a class="btn btn-secondary" href="#cta">Partner With Us</a>
     </div>
+  </header>
 
-    <main class="app-content">
-      <!-- HOME -->
-      <section id="homeScreen" class="screen active">
-        <div class="hero">
-          <h1>Stay Ready. Move Smart.</h1>
+  <main id="top">
+    <section class="hero" id="overview">
+      <div class="container hero-wrap">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            Portable intelligence by RoboTechi
+          </div>
+
+          <h1><span class="hero-wordmark">NodeBlk</span></h1>
+          <p class="subhead">
+            A handheld, offline-first resilience device with a display and keyboard —
+            built to deliver emergency guidance, survival knowledge, and community-centered
+            tools when networks fail and critical systems go dark.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#features" class="btn btn-primary">Explore NodeBlk</a>
+            <a href="#story" class="btn btn-secondary">See the vision</a>
+          </div>
+
+          <div class="hero-meta">
+            <span>Offline-first</span>
+            <span>Display + keyboard</span>
+            <span>LilyGO T-Deck prototype path</span>
+            <span>Community-focused design</span>
+          </div>
+        </div>
+
+        <div class="device-stage" aria-hidden="true">
+          <div class="device-glow"></div>
+          <div class="device">
+            <div class="device-screen">
+              <div class="screen-ui">
+                <div>
+                  <div class="screen-top">
+                    <span>NODEBLK OS</span>
+                    <span>87%</span>
+                  </div>
+
+                  <div class="screen-card">
+                    <h3>Action, ready.</h3>
+                    <p>
+                      Fast access to water, power, emergency, and community coordination
+                      guidance — directly on-device, even without signal.
+                    </p>
+                  </div>
+
+                  <div class="screen-modules">
+                    <div class="screen-module">
+                      <span>Mode</span>
+                      <strong>Resilience OS</strong>
+                    </div>
+                    <div class="screen-module">
+                      <span>Access</span>
+                      <strong>Emergency Guides</strong>
+                    </div>
+                    <div class="screen-module">
+                      <span>Input</span>
+                      <strong>Keyboard + tactile nav</strong>
+                    </div>
+                    <div class="screen-module">
+                      <span>Focus</span>
+                      <strong>Community resilience</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="screen-top">
+                  <span>Portable Intelligence</span>
+                  <span>RBT-01</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="device-controls">
+              <div class="control-pad"><div class="dpad"></div></div>
+              <div class="control-center">
+                <div class="center-pills">
+                  <div class="pill"></div>
+                  <div class="pill"></div>
+                </div>
+              </div>
+              <div class="control-actions">
+                <div class="actions">
+                  <div class="action-btn"></div>
+                  <div class="action-btn"></div>
+                  <div class="action-btn"></div>
+                  <div class="action-btn"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container scroll-note">Built for resilience. Built for real life.</div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <h2>Built for the moments systems break down.</h2>
           <p>
-            NodeBlk is your offline-first community survival interface for quick guides,
-            critical knowledge, and trusted resource access.
+            NodeBlk combines a handheld device, offline-first software, and practical
+            guidance to deliver clarity under pressure for both investors evaluating the
+            opportunity and communities who need the product most.
           </p>
         </div>
 
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-value" id="guideCount">0</div>
-            <div class="stat-label">Guides Loaded</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">V2</div>
-            <div class="stat-label">UI Build</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">100%</div>
-            <div class="stat-label">Local First</div>
-          </div>
+        <div class="split">
+          <article class="feature-card">
+            <span class="feature-label">Offline-first system</span>
+            <h3>Your essential library, always within reach.</h3>
+            <p>
+              Access curated guides for water, food, first response, power, communication,
+              and local preparedness — all stored directly on-device for use when internet
+              access is limited or unavailable.
+            </p>
+            <div class="feature-visual">
+              <div class="feature-grid-ui">
+                <div class="mini-card">
+                  <span>Library</span>
+                  <strong>Water, food, shelter, first aid, and emergency response guides</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Knowledge</span>
+                  <strong>Localized, community-centered information with fast on-device access</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Utility</span>
+                  <strong>Designed to be readable and usable under pressure</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Updates</span>
+                  <strong>Expandable with future regional packs and preparedness modules</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-label">Real-world guidance</span>
+            <h3>Hardware people can trust in uncertain situations.</h3>
+            <p>
+              The prototype direction uses a LilyGO T-Deck style platform with an integrated
+              display and keyboard, allowing NodeBlk to feel immediate, tangible, and ready
+              for investor demos as well as real-world field use.
+            </p>
+            <div class="feature-visual">
+              <div class="map-visual">
+                <div class="map-route"></div>
+                <div class="map-pin one"></div>
+                <div class="map-pin two"></div>
+              </div>
+            </div>
+          </article>
         </div>
+      </div>
+    </section>
 
-        <div class="grid">
-          <div class="card" onclick="openEmergency()">
-            <div class="card-icon">🚨</div>
-            <h3>Emergency</h3>
-            <p>Search, browse, and open offline emergency response guides.</p>
-          </div>
-
-          <div class="card" onclick="showMainScreen('knowledgeScreen')">
-            <div class="card-icon">📚</div>
-            <h3>Knowledge</h3>
-            <p>Future lessons for survival, tech, and practical community skills.</p>
-          </div>
-
-          <div class="card" onclick="showMainScreen('communityScreen')">
-            <div class="card-icon">📡</div>
-            <h3>Community</h3>
-            <p>Future trusted contacts, local hubs, and mutual support resources.</p>
-          </div>
-
-          <div class="card" onclick="showMainScreen('settingsScreen')">
-            <div class="card-icon">⚙️</div>
-            <h3>Settings</h3>
-            <p>Manage saved data, appearance, and system preferences later.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- EMERGENCY LIST -->
-      <section id="emergencyScreen" class="screen">
-        <div class="screen-header">
-          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
-          <h2 class="screen-title">Emergency Guides</h2>
-        </div>
-
-        <div class="alert-box">
-          Demo prototype content for NodeBlk MVP. Replace with verified guides later.
-        </div>
-
-        <div class="search-wrap">
-          <input
-            id="guideSearch"
-            class="search-input"
-            type="text"
-            placeholder="Search guides..."
-            oninput="filterGuides()"
-          />
-        </div>
-
-        <div id="guideList" class="guide-list"></div>
-      </section>
-
-      <!-- EMERGENCY DETAIL -->
-      <section id="guideDetailScreen" class="screen">
-        <div class="screen-header">
-          <button class="back-btn" onclick="showMainScreen('emergencyScreen')">←</button>
-          <h2 class="screen-title">Guide Detail</h2>
-        </div>
-
-        <div class="detail-card">
-          <div class="detail-meta">
-            <span id="detailLabel" class="mini-label">Guide</span>
-          </div>
-          <h2 id="detailTitle" class="detail-title">Title</h2>
-          <p id="detailBody" class="detail-body">Guide content loads here.</p>
-        </div>
-      </section>
-
-      <!-- KNOWLEDGE -->
-      <section id="knowledgeScreen" class="screen">
-        <div class="screen-header">
-          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
-          <h2 class="screen-title">Knowledge</h2>
-        </div>
-
-        <div class="placeholder-box">
-          <h3>Offline Library</h3>
+    <section class="section full-bleed" id="story">
+      <div class="container story-grid">
+        <div class="story-copy">
+          <div class="story-kicker">Why NodeBlk</div>
+          <h2>Technology should serve the people who are helped last.</h2>
           <p>
-            This section can hold local JSON content for tech basics, preparedness,
-            financial literacy, first aid, and more.
+            NodeBlk was shaped by the aftermath of Hurricane Helene in Asheville, North Carolina,
+            where outages in cellular service, fuel access, and clean water exposed just how fragile
+            daily systems can become.
+          </p>
+          <p>
+            It also exposed a deeper inequity: African American and underprivileged communities were
+            often left waiting longer for support while tourist-centered areas recovered first. NodeBlk
+            responds to that gap with a handheld device focused on resilience, access, and practical
+            knowledge that stays available even when infrastructure does not.
           </p>
         </div>
-      </section>
 
-      <!-- COMMUNITY -->
-      <section id="communityScreen" class="screen">
-        <div class="screen-header">
-          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
-          <h2 class="screen-title">Community</h2>
+        <div class="story-visual" aria-hidden="true">
+          <div class="story-device-stack">
+            <div class="device">
+              <div class="device-screen">
+                <div class="screen-ui">
+                  <div>
+                    <div class="screen-top"><span>ACCESS</span><span>LOCAL</span></div>
+                    <div class="screen-card">
+                      <h3>Find clarity.</h3>
+                      <p>Focused information, less noise, and a tighter path to action.</p>
+                    </div>
+                  </div>
+                  <div class="screen-top"><span>NodeBlk</span><span>Ready</span></div>
+                </div>
+              </div>
+              <div class="device-controls">
+                <div class="control-pad"><div class="dpad"></div></div>
+                <div class="control-center"><div class="center-pills"><div class="pill"></div><div class="pill"></div></div></div>
+                <div class="control-actions"><div class="actions"><div class="action-btn"></div><div class="action-btn"></div><div class="action-btn"></div><div class="action-btn"></div></div></div>
+              </div>
+            </div>
+            <div class="device">
+              <div class="device-screen"></div>
+              <div class="device-controls"></div>
+            </div>
+          </div>
         </div>
-
-        <div class="placeholder-box">
-          <h3>Community Network</h3>
+      </div>
+    
+    <section class="section" id="prototype">
+      <div class="container">
+        <div class="section-head">
+          <h2>A prototype investors can understand in minutes.</h2>
           <p>
-            Later this can include trusted contacts, local clinics, support groups,
-            legal help, food access, and neighborhood resources.
+            NodeBlk is being prototyped around the LilyGO T-Deck — a compact platform that gives
+            us a display, keyboard, portable form factor, and a fast path to a credible investor demo.
           </p>
         </div>
-      </section>
 
-      <!-- SETTINGS -->
-      <section id="settingsScreen" class="screen">
-        <div class="screen-header">
-          <button class="back-btn" onclick="showMainScreen('homeScreen')">←</button>
-          <h2 class="screen-title">Settings</h2>
+        <div class="split">
+          <article class="feature-card">
+            <span class="feature-label">Prototype workflow</span>
+            <h3>Move from concept to demonstration fast.</h3>
+            <p>
+              The immediate goal is a polished MVP: boot screen, menu navigation, offline knowledge
+              categories, and a tactile interface that proves the product direction without waiting on
+              a full custom hardware cycle.
+            </p>
+            <div class="feature-visual">
+              <div class="feature-grid-ui">
+                <div class="mini-card">
+                  <span>Step 01</span>
+                  <strong>Flash the T-Deck and validate display + keyboard input</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Step 02</span>
+                  <strong>Build the NodeBlk UI flow and offline guide system</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Step 03</span>
+                  <strong>Package the prototype in a premium branded enclosure</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Step 04</span>
+                  <strong>Capture product photos, video, and investor-facing assets</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-label">What the MVP shows</span>
+            <h3>Small device. Clear proof.</h3>
+            <p>
+              The prototype is designed to communicate value quickly: water and food guidance, emergency
+              response steps, power and energy references, and community coordination tools — all available
+              offline on a handheld device built for resilience.
+            </p>
+            <div class="feature-visual">
+              <div class="feature-grid-ui">
+                <div class="mini-card">
+                  <span>Boot</span>
+                  <strong>NodeBlk OS startup experience with clear brand identity</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Menu</span>
+                  <strong>Fast navigation through essential survival and preparedness modules</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Interface</span>
+                  <strong>Readable screen layouts with tactile keyboard-driven control</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Demo</span>
+                  <strong>Investor-ready proof of product, mission, and market direction</strong>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
+      </div>
+    </section>
 
-        <div class="placeholder-box">
-          <h3>System Preferences</h3>
+    <section class="section full-bleed" id="specs">
+      <div class="container specs-wrap">
+        <div class="spec-copy">
+          <h2>Prototype specifications, grounded in a real build path.</h2>
           <p>
-            Future options: theme switching, export/import guides, saved favorites,
-            battery mode, and offline sync settings.
+            The first investor-facing NodeBlk unit is centered around the LilyGO T-Deck and
+            a focused offline software experience. The goal is not final manufacturing yet —
+            it is a credible, compelling proof of product and market need.
           </p>
         </div>
-      </section>
-    </main>
 
-    <nav class="bottom-nav">
-      <button class="nav-btn active" data-target="homeScreen" onclick="showMainScreen('homeScreen')">
-        <span>⌂</span>
-        <span>Home</span>
-      </button>
-      <button class="nav-btn" data-target="emergencyScreen" onclick="openEmergency()">
-        <span>🚨</span>
-        <span>Emergency</span>
-      </button>
-      <button class="nav-btn" data-target="knowledgeScreen" onclick="showMainScreen('knowledgeScreen')">
-        <span>📚</span>
-        <span>Library</span>
-      </button>
-      <button class="nav-btn" data-target="settingsScreen" onclick="showMainScreen('settingsScreen')">
-        <span>⚙️</span>
-        <span>Settings</span>
-      </button>
-    </nav>
-  </div>
-
-  <script>
-    let emergencyGuides = [];
-    let guidesLoaded = false;
-
-    function updateClock() {
-      const el = document.getElementById("clock");
-      const now = new Date();
-      el.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    function setActiveNav(screenId) {
-      document.querySelectorAll(".nav-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.target === screenId);
-      });
-    }
-
-    function showMainScreen(screenId) {
-      document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.remove("active");
-      });
-
-      const target = document.getElementById(screenId);
-      if (target) {
-        target.classList.add("active");
-      }
-
-      const navTarget = screenId === "guideDetailScreen" ? "emergencyScreen" : screenId;
-      setActiveNav(navTarget);
-      document.querySelector(".app-content").scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    async function loadEmergencyGuides() {
-      if (guidesLoaded) return;
-
-      const list = document.getElementById("guideList");
-
-      try {
-        const response = await fetch("data/emergency.json");
-        const data = await response.json();
-        emergencyGuides = data.guides || [];
-        guidesLoaded = true;
-        document.getElementById("guideCount").textContent = emergencyGuides.length;
-        renderGuides(emergencyGuides);
-      } catch (error) {
-        list.innerHTML = `
-          <div class="empty-state">
-            Failed to load local emergency guides.
+        <div class="spec-panel">
+          <div class="spec-row">
+            <span>Category</span>
+            <strong>Handheld resilience device / offline-first knowledge platform</strong>
           </div>
-        `;
-        console.error(error);
-      }
-    }
-
-    function renderGuides(guides) {
-      const list = document.getElementById("guideList");
-
-      if (!guides.length) {
-        list.innerHTML = `
-          <div class="empty-state">
-            No guides matched your search.
+          <div class="spec-row">
+            <span>Core focus</span>
+            <strong>Offline access, emergency guidance, preparedness tools, localized support</strong>
           </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = guides.map(guide => `
-        <div class="guide-card" onclick="openGuide(${guide.id})">
-          <span class="mini-label">${guide.label}</span>
-          <h3>${guide.title}</h3>
-          <p>${guide.content.slice(0, 95)}${guide.content.length > 95 ? "..." : ""}</p>
+          <div class="spec-row">
+            <span>Interface</span>
+            <strong>Integrated display, physical keyboard, tactile navigation, low-distraction UI</strong>
+          </div>
+          <div class="spec-row">
+            <span>System vision</span>
+            <strong>LilyGO T-Deck based MVP with expandable offline modules and future custom hardware path</strong>
+          </div>
+          <div class="spec-row">
+            <span>Designed by</span>
+            <strong>RoboTechi within the OdotNYC ecosystem</strong>
+          </div>
         </div>
-      `).join("");
-    }
+      </div>
+    </section>
 
-    function filterGuides() {
-      const query = document.getElementById("guideSearch").value.trim().toLowerCase();
 
-      const filtered = emergencyGuides.filter(guide =>
-        guide.title.toLowerCase().includes(query) ||
-        guide.content.toLowerCase().includes(query) ||
-        guide.label.toLowerCase().includes(query)
-      );
+    <section class="section" id="investors">
+      <div class="container">
+        <div class="section-head">
+          <h2>Built for community impact. Positioned for growth.</h2>
+          <p>
+            NodeBlk is being developed as a startup-ready platform that can speak to multiple audiences:
+            communities that need preparedness tools, institutions that need resilience solutions, and
+            investors looking for a mission-driven hardware + software opportunity.
+          </p>
+        </div>
 
-      renderGuides(filtered);
-    }
+        <div class="split">
+          <article class="feature-card">
+            <span class="feature-label">Why it matters</span>
+            <h3>A clear problem with a lived-experience origin.</h3>
+            <p>
+              NodeBlk is rooted in firsthand disaster experience and a visible service gap in how recovery
+              reaches underserved communities. That gives the product a story, a purpose, and a credible
+              reason to exist beyond trend-driven hardware.
+            </p>
+            <div class="feature-visual">
+              <div class="feature-grid-ui">
+                <div class="mini-card">
+                  <span>Need</span>
+                  <strong>Disaster response information often disappears when connectivity fails</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Gap</span>
+                  <strong>Underserved communities can be last to receive resources and support</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Answer</span>
+                  <strong>Portable, offline access to practical community-centered knowledge</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Vision</span>
+                  <strong>A scalable resilience platform beyond the first prototype</strong>
+                </div>
+              </div>
+            </div>
+          </article>
 
-    async function openEmergency() {
-      await loadEmergencyGuides();
-      showMainScreen("emergencyScreen");
-    }
+          <article class="feature-card">
+            <span class="feature-label">Who it serves</span>
+            <h3>Designed for customers and stakeholders alike.</h3>
+            <p>
+              NodeBlk can be positioned for direct users, nonprofits, schools, emergency preparedness
+              partners, municipalities, and impact-driven funding organizations looking to back resilient
+              community technology.
+            </p>
+            <div class="feature-visual">
+              <div class="feature-grid-ui">
+                <div class="mini-card">
+                  <span>Customer</span>
+                  <strong>Individuals and families preparing for outages and emergencies</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Institution</span>
+                  <strong>Schools, nonprofits, and local resilience programs</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Funding</span>
+                  <strong>Grants, pilot partners, and impact-oriented investors</strong>
+                </div>
+                <div class="mini-card">
+                  <span>Next</span>
+                  <strong>Prototype pilots, content expansion, and future hardware refinement</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
-    function openGuide(id) {
-      const guide = emergencyGuides.find(item => item.id === id);
-      if (!guide) return;
+    <section class="cta" id="cta">
+      <div class="container">
+        <div class="cta-card">
+          <h2>NodeBlk is ready for its next stage.</h2>
+          <p>
+            A product vision rooted in resilience, equity, and portable intelligence —
+            built to help investors, partners, and future customers see where this platform can go.
+          </p>
+          <div class="hero-actions" style="justify-content:center; margin-bottom:0;">
+            <a href="#top" class="btn btn-primary">Back to top</a>
+            <a href="#investors" class="btn btn-secondary">Review investor case</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-      document.getElementById("detailLabel").textContent = guide.label;
-      document.getElementById("detailTitle").textContent = guide.title;
-      document.getElementById("detailBody").textContent = guide.content;
-
-      showMainScreen("guideDetailScreen");
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      setActiveNav("homeScreen");
-      loadEmergencyGuides();
-    });
-  </script>
+  <footer>
+    <div class="container footer-row">
+      <div>© 2026 RoboTechi. NodeBlk investor and product concept page.</div>
+      <div>Portable resilience. Real-world utility.</div>
+    </div>
+  </footer>
 </body>
 </html>
