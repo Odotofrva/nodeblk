@@ -1,125 +1,505 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NodeBlk</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeBlk — Portable Intelligence</title>
+  <meta name="description" content="NodeBlk is a portable Raspberry Pi Zero 2 W powered device for real-world guidance, offline-first tools, and fast-access community technology." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #04070d;
+      --panel: rgba(10, 16, 28, 0.72);
+      --panel-2: rgba(11, 19, 34, 0.92);
+      --line: rgba(103, 232, 249, 0.16);
+      --line-strong: rgba(103, 232, 249, 0.34);
+      --text: #f5fbff;
+      --muted: rgba(226, 244, 255, 0.68);
+      --cyan: #67e8f9;
+      --blue: #60a5fa;
+      --glow: 0 0 0 1px rgba(103,232,249,0.08), 0 24px 70px rgba(0,0,0,0.45), 0 0 60px rgba(96,165,250,0.08);
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(96,165,250,0.14), transparent 26%),
+        radial-gradient(circle at 80% 20%, rgba(103,232,249,0.10), transparent 24%),
+        linear-gradient(180deg, #02040a 0%, #050913 55%, #04070d 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
 
-<style>
-body {
-    margin:0;
-    font-family: "Arial Rounded MT Bold", Arial, sans-serif;
-    background:#f5f7fa;
-    color:#111;
-    scroll-snap-type: y mandatory;
-}
+    .orbitron { font-family: 'Orbitron', sans-serif; }
 
-section {
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    scroll-snap-align:start;
-    padding:40px;
-}
+    .grid-bg::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(circle at center, black 55%, transparent 90%);
+      opacity: 0.45;
+      z-index: 0;
+    }
 
-/* Updated color theme based on logo */
-:root {
-    --green:#22c55e;
-    --blue:#0ea5e9;
-    --dark:#0f172a;
-}
+    .cursor-glow {
+      position: fixed;
+      width: 34rem;
+      height: 34rem;
+      border-radius: 999px;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(103,232,249,0.12), rgba(96,165,250,0.08) 28%, transparent 65%);
+      filter: blur(18px);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      opacity: 0.75;
+    }
 
-/* Hero */
-.hero {
-    background: linear-gradient(135deg, var(--green), var(--blue));
-    color:white;
-    flex-direction:column;
-    text-align:center;
-}
+    .glass {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: var(--glow);
+      backdrop-filter: blur(18px);
+    }
 
-.hero h1 {
-    font-family:'Orbitron', sans-serif;
-    font-size:4rem;
-}
+    .line-panel {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid var(--line);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), var(--glow);
+    }
 
-/* Section styling */
-.panel {
-    background:white;
-    border-radius:20px;
-    box-shadow:0 20px 40px rgba(0,0,0,0.08);
-    padding:40px;
-    max-width:900px;
-}
+    .scan {
+      position: relative;
+      overflow: hidden;
+    }
 
-h2 {
-    font-family:'Orbitron', sans-serif;
-    color:var(--dark);
-}
+    .scan::after {
+      content: "";
+      position: absolute;
+      inset: -100% 0 auto 0;
+      height: 40%;
+      background: linear-gradient(180deg, transparent, rgba(103,232,249,0.08), transparent);
+      animation: scanMove 8s linear infinite;
+      pointer-events: none;
+    }
 
-.button {
-    background:linear-gradient(135deg,var(--green),var(--blue));
-    color:white;
-    padding:12px 20px;
-    border-radius:999px;
-    text-decoration:none;
-    display:inline-block;
-    margin-top:20px;
-}
+    @keyframes scanMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(320%); }
+    }
 
-/* Video */
-video {
-    width:100%;
-    border-radius:16px;
-}
-</style>
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-device {
+      animation: floatY 5.8s ease-in-out infinite;
+      filter: drop-shadow(0 26px 48px rgba(0,0,0,0.45));
+    }
+
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .tech-card:hover,
+    .spec-card:hover,
+    .story-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--line-strong);
+    }
+
+    .tech-card,
+    .spec-card,
+    .story-card {
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .terminal-line {
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .terminal-line::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: #67e8f9;
+    }
+
+    .pill {
+      border: 1px solid rgba(103,232,249,0.18);
+      background: rgba(103,232,249,0.08);
+      color: rgba(226,244,255,0.92);
+    }
+
+    .spec-tab.active {
+      background: linear-gradient(135deg, rgba(103,232,249,0.18), rgba(96,165,250,0.12));
+      border-color: rgba(103,232,249,0.34);
+      color: white;
+    }
+
+    .spec-view { display: none; }
+    .spec-view.active { display: block; }
+
+    .wire {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.5;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(103,232,249,0.18), transparent 10%),
+        radial-gradient(circle at 90% 30%, rgba(96,165,250,0.12), transparent 12%),
+        linear-gradient(120deg, transparent 0%, transparent 46%, rgba(103,232,249,0.08) 49%, transparent 51%, transparent 100%),
+        linear-gradient(35deg, transparent 0%, transparent 52%, rgba(96,165,250,0.08) 54%, transparent 56%, transparent 100%);
+    }
+
+    .marquee-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .marquee {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+      gap: 1rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .noise::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 70% 65%, rgba(255,255,255,0.16) 0.5px, transparent 0.6px),
+        radial-gradient(circle at 40% 85%, rgba(255,255,255,0.14) 0.5px, transparent 0.6px);
+      background-size: 18px 18px, 26px 26px, 22px 22px;
+    }
+  </style>
 </head>
+<body class="grid-bg">
+  <div class="cursor-glow hidden md:block" id="cursorGlow"></div>
 
-<body>
+  <header class="sticky top-0 z-50 border-b border-white/10 bg-[#050913]/80 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
+      <a href="#home" class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-sm font-bold text-cyan-200">NB</div>
+        <div>
+          <div class="orbitron text-sm font-bold uppercase tracking-[0.35em] text-cyan-200">NodeBlk</div>
+          <div class="text-[11px] uppercase tracking-[0.22em] text-white/45">Portable Intelligence</div>
+        </div>
+      </a>
 
-<section class="hero">
-    <h1>NodeBlk</h1>
-    <p>Off-grid tech for the future.</p>
-</section>
-
-<section>
-    <div class="panel">
-        <h2>Powered by Pi Zero 2 W</h2>
-        <p>Portable computing with battery-powered independence.</p>
+      <nav class="hidden items-center gap-2 md:flex">
+        <a href="#product" class="rounded-full border border-white/10 px-4 py-2 text-sm text-white/80 transition hover:border-cyan-300/25 hover:bg-white/5">Product</a>
+        <a href="#system" class="rounded-full border border-white/10 px-4 py-2 text-sm text-white/80 transition hover:border-cyan-300/25 hover:bg-white/5">System</a>
+        <a href="#experience" class="rounded-full border border-white/10 px-4 py-2 text-sm text-white/80 transition hover:border-cyan-300/25 hover:bg-white/5">Experience</a>
+        <a href="#contact" class="rounded-full bg-cyan-300 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5">Connect</a>
+      </nav>
     </div>
-</section>
-
-<section>
-    <div class="panel">
-        <h2>Real World Guidance</h2>
-        <img src="real-world-guidance-placeholder.svg" style="width:100%;object-fit:contain;">
+    <div class="marquee-wrap border-t border-white/10 bg-black/20 py-2">
+      <div class="marquee text-[11px] uppercase tracking-[0.24em] text-cyan-100/70">
+        <span>Raspberry Pi Zero 2 W</span><span>Battery Powered</span><span>Offline-First Guidance</span><span>Portable Utility</span><span>Emergency Reference</span><span>Community Technology</span>
+        <span>Raspberry Pi Zero 2 W</span><span>Battery Powered</span><span>Offline-First Guidance</span><span>Portable Utility</span><span>Emergency Reference</span><span>Community Technology</span>
+      </div>
     </div>
-</section>
+  </header>
 
-<section>
-    <div class="panel">
-        <h2>Offline First System</h2>
-        <img src="offline-first-system-placeholder.svg" style="width:100%;object-fit:contain;">
-    </div>
-</section>
+  <main id="home" class="relative z-10">
+    <section class="mx-auto max-w-7xl px-5 pb-10 pt-10 sm:px-8 sm:pt-16">
+      <div class="grid items-center gap-8 lg:grid-cols-[1.08fr_.92fr]">
+        <div class="reveal">
+          <div class="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.26em] text-cyan-100">
+            Startup Prototype / Tech Utility Device
+          </div>
+          <h1 class="orbitron mt-5 text-5xl font-extrabold uppercase leading-[0.92] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
+            NodeBlk
+          </h1>
+          <p class="mt-5 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
+            A pocket-ready platform for <span class="text-white">real world guidance</span>, <span class="text-white">offline-first tools</span>, and fast-access knowledge built around the <span class="text-cyan-200">Raspberry Pi Zero 2 W</span>. Same premium layout direction, now pushed into a more futuristic and tech-forward product experience.
+          </p>
 
-<section>
-    <div class="panel">
-        <h2>Watch the Commercial</h2>
-        <video controls>
-            <source src="nodeblk-commercial.mp4" type="video/mp4">
-        </video>
-    </div>
-</section>
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a href="#product" class="rounded-full bg-cyan-300 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:shadow-xl">Explore Product</a>
+            <a href="#system" class="rounded-full border border-cyan-300/20 px-6 py-3 text-sm font-semibold text-cyan-100 transition hover:bg-white/5">View System</a>
+          </div>
 
-<section>
-    <div class="panel">
-        <h2>Explore NodeBlk</h2>
-        <a href="https://odotofrva.github.io/nodeblk/" class="button">Visit Site</a>
-    </div>
-</section>
+          <div class="mt-8 grid gap-3 sm:grid-cols-3">
+            <div class="spec-card line-panel rounded-3xl p-4">
+              <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/60">Core</div>
+              <div class="mt-2 text-sm font-semibold text-white">Pi Zero 2 W</div>
+            </div>
+            <div class="spec-card line-panel rounded-3xl p-4">
+              <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/60">Power</div>
+              <div class="mt-2 text-sm font-semibold text-white">Battery Pack</div>
+            </div>
+            <div class="spec-card line-panel rounded-3xl p-4">
+              <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/60">Mode</div>
+              <div class="mt-2 text-sm font-semibold text-white">Offline Utility</div>
+            </div>
+          </div>
+        </div>
 
+        <div class="reveal">
+          <div class="glass noise scan relative overflow-hidden rounded-[2rem] p-5 sm:p-6">
+            <div class="wire"></div>
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <div class="text-[11px] uppercase tracking-[0.26em] text-cyan-100/55">NodeBlk Live Build</div>
+                <div class="mt-1 text-lg font-semibold text-white">Prototype Overview</div>
+              </div>
+              <div class="pill rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.18em]">Active</div>
+            </div>
+
+            <div class="grid gap-5 pt-6 lg:grid-cols-[1.08fr_.92fr]">
+              <div class="line-panel rounded-[1.6rem] p-5">
+                <div class="hero-device rounded-[1.25rem] border border-cyan-300/15 bg-[radial-gradient(circle_at_top,rgba(103,232,249,0.12),transparent_36%),#060b14] p-5">
+                  <div class="mx-auto flex aspect-[4/5] max-w-[18rem] items-center justify-center rounded-[1.8rem] border border-cyan-300/18 bg-black/40 px-4 py-6 shadow-2xl">
+                    <img src="nodeblk.png" alt="NodeBlk device render" class="h-full w-full object-contain" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="line-panel rounded-3xl p-4">
+                  <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/55">Boot State</div>
+                  <div class="mt-2 text-sm font-semibold text-white">Portable system ready</div>
+                </div>
+                <div class="line-panel rounded-3xl p-4">
+                  <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/55">Display Stack</div>
+                  <div class="mt-2 text-sm font-semibold text-white">Fast-access UI panels</div>
+                </div>
+                <div class="line-panel rounded-3xl p-4">
+                  <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/55">Use Case</div>
+                  <div class="mt-2 text-sm font-semibold text-white">Guidance + tools + references</div>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-black/35 p-4 font-mono text-sm text-cyan-100/85">
+                  <div class="terminal-line">boot.nodeblk --device="pi-zero-2w"</div>
+                  <div class="terminal-line mt-2">power.source="battery pack"</div>
+                  <div class="terminal-line mt-2">mode="offline-first"</div>
+                  <div class="terminal-line mt-2">ui.state="fast access ready"</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="product" class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+      <div class="reveal mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-sm font-medium tracking-wide text-cyan-100/55">Product Story</p>
+          <h2 class="mt-2 text-3xl font-semibold sm:text-4xl">Same layout foundation. More tech energy.</h2>
+        </div>
+        <div class="text-sm text-white/55">Designed for investors, partners, and future users.</div>
+      </div>
+
+      <div class="grid gap-4 lg:grid-cols-3">
+        <article class="tech-card line-panel reveal rounded-[2rem] p-6">
+          <div class="pill inline-flex rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em]">01</div>
+          <h3 class="mt-4 text-2xl font-semibold">Real World Guidance</h3>
+          <p class="mt-3 leading-7 text-white/70">Built to deliver practical information fast — survival references, emergency pathways, local utility, and clear next-step guidance when time matters.</p>
+          <div class="mt-6 rounded-[1.5rem] border border-cyan-300/12 bg-black/35 p-4">
+            <img src="real-world-guidance-placeholder.svg" alt="Real world guidance visual" class="mx-auto h-64 w-full object-contain" />
+          </div>
+        </article>
+
+        <article class="tech-card line-panel reveal rounded-[2rem] p-6">
+          <div class="pill inline-flex rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em]">02</div>
+          <h3 class="mt-4 text-2xl font-semibold">Offline First System</h3>
+          <p class="mt-3 leading-7 text-white/70">NodeBlk is intended to stay useful even when internet access drops away. Core screens and essential tools should remain quick, readable, and low-friction.</p>
+          <div class="mt-6 rounded-[1.5rem] border border-cyan-300/12 bg-black/35 p-4">
+            <img src="offline-first-system-placeholder.svg" alt="Offline first system visual" class="mx-auto h-64 w-full object-contain" />
+          </div>
+        </article>
+
+        <article class="tech-card line-panel reveal rounded-[2rem] p-6">
+          <div class="pill inline-flex rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.2em]">03</div>
+          <h3 class="mt-4 text-2xl font-semibold">Portable Startup Device</h3>
+          <p class="mt-3 leading-7 text-white/70">Using the Raspberry Pi Zero 2 W and a suitable battery solution gives NodeBlk a clear prototype path while still making the site feel premium and future-ready.</p>
+          <div class="mt-6 grid gap-3">
+            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/55">Compute</div>
+              <div class="mt-2 text-sm font-semibold">Raspberry Pi Zero 2 W</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/55">Power</div>
+              <div class="mt-2 text-sm font-semibold">Portable battery pack</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div class="text-[11px] uppercase tracking-[0.18em] text-cyan-100/55">Direction</div>
+              <div class="mt-2 text-sm font-semibold">Investor-friendly prototype</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="system" class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+      <div class="reveal rounded-[2rem] border border-cyan-300/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-6 sm:p-8">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p class="text-sm font-medium tracking-wide text-cyan-100/55">System View</p>
+            <h2 class="mt-2 text-3xl font-semibold sm:text-4xl">Tap between the NodeBlk layers.</h2>
+            <p class="mt-3 max-w-2xl leading-7 text-white/68">I kept this part interactive so the site feels more digital and product-driven. Visitors can switch between hardware, software, and user experience messaging without leaving the page.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button class="spec-tab active rounded-full border border-white/10 px-4 py-2 text-sm text-white/75" data-target="hardware">Hardware</button>
+            <button class="spec-tab rounded-full border border-white/10 px-4 py-2 text-sm text-white/75" data-target="software">Software</button>
+            <button class="spec-tab rounded-full border border-white/10 px-4 py-2 text-sm text-white/75" data-target="experienceTab">Experience</button>
+          </div>
+        </div>
+
+        <div class="mt-8 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+          <div class="line-panel rounded-[1.75rem] p-5">
+            <div class="spec-view active" id="hardware">
+              <div class="text-[11px] uppercase tracking-[0.22em] text-cyan-100/55">Hardware Stack</div>
+              <h3 class="mt-3 text-2xl font-semibold">Prototype foundation</h3>
+              <ul class="mt-5 space-y-3 text-white/72">
+                <li>• Raspberry Pi Zero 2 W as the core compute platform</li>
+                <li>• Battery-powered mobility for portable everyday use</li>
+                <li>• Compact display and controls for quick navigation</li>
+                <li>• Practical enclosure path for MVP and investor demos</li>
+              </ul>
+            </div>
+            <div class="spec-view" id="software">
+              <div class="text-[11px] uppercase tracking-[0.22em] text-cyan-100/55">Software Layer</div>
+              <h3 class="mt-3 text-2xl font-semibold">Fast-access product logic</h3>
+              <ul class="mt-5 space-y-3 text-white/72">
+                <li>• Offline-first categories for essential information</li>
+                <li>• Quick-launch navigation with minimal cognitive load</li>
+                <li>• Local data bundles for useful reference content</li>
+                <li>• Expandable roadmap for future connected features</li>
+              </ul>
+            </div>
+            <div class="spec-view" id="experienceTab">
+              <div class="text-[11px] uppercase tracking-[0.22em] text-cyan-100/55">User Experience</div>
+              <h3 class="mt-3 text-2xl font-semibold">Clean, direct, futuristic</h3>
+              <ul class="mt-5 space-y-3 text-white/72">
+                <li>• Product messaging that feels premium and investable</li>
+                <li>• Motion and state changes that feel more tech-forward</li>
+                <li>• Visual hierarchy built for clarity, not clutter</li>
+                <li>• Easy path from first impression to product understanding</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="line-panel rounded-[1.75rem] p-5">
+            <div class="rounded-[1.5rem] border border-cyan-300/12 bg-black/35 p-5">
+              <div class="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <div class="text-[11px] uppercase tracking-[0.2em] text-cyan-100/55">NodeBlk Status Grid</div>
+                  <div class="mt-1 text-sm font-semibold text-white">System channels</div>
+                </div>
+                <div class="pill rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.18em]">Ready</div>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><div class="text-[11px] uppercase tracking-[0.16em] text-cyan-100/55">Power</div><div class="mt-2 text-sm font-semibold">Mobile battery profile</div></div>
+                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><div class="text-[11px] uppercase tracking-[0.16em] text-cyan-100/55">Compute</div><div class="mt-2 text-sm font-semibold">Pi Zero 2 W</div></div>
+                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><div class="text-[11px] uppercase tracking-[0.16em] text-cyan-100/55">Access</div><div class="mt-2 text-sm font-semibold">Fast-launch UI</div></div>
+                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4"><div class="text-[11px] uppercase tracking-[0.16em] text-cyan-100/55">Mode</div><div class="mt-2 text-sm font-semibold">Offline-first</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+      <div class="grid gap-4 lg:grid-cols-2">
+        <article class="story-card reveal line-panel rounded-[2rem] p-6 sm:p-8">
+          <p class="text-sm font-medium tracking-wide text-cyan-100/55">Interaction Layer</p>
+          <h3 class="mt-2 text-3xl font-semibold">A more techie feel without losing clarity.</h3>
+          <p class="mt-4 leading-8 text-white/70">I pushed the motion, glow, grid treatment, terminal details, and switchable UI sections so the page feels more like a modern hardware startup product site instead of a static landing page.</p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70">Cursor glow</span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70">Scroll reveal</span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70">Spec switching</span>
+            <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/70">Tech grid</span>
+          </div>
+        </article>
+
+        <article class="story-card reveal line-panel rounded-[2rem] p-6 sm:p-8">
+          <p class="text-sm font-medium tracking-wide text-cyan-100/55">Site Direction</p>
+          <h3 class="mt-2 text-3xl font-semibold">Built for both customers and investors.</h3>
+          <p class="mt-4 leading-8 text-white/70">The site keeps the premium storytelling approach from before, but the interaction language is now sharper: more interface-driven, more system-like, and more aligned with a futuristic device launch.</p>
+          <div class="mt-6 rounded-[1.5rem] border border-cyan-300/12 bg-black/35 p-5 font-mono text-sm text-cyan-100/85">
+            <div class="terminal-line">layout.mode = "premium product story"</div>
+            <div class="terminal-line mt-2">interaction.style = "tech forward"</div>
+            <div class="terminal-line mt-2">device.core = "pi zero 2 w"</div>
+            <div class="terminal-line mt-2">audience = ["investors", "customers"]</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" class="mx-auto max-w-7xl px-5 pb-16 pt-8 sm:px-8 sm:pb-24">
+      <div class="reveal glass rounded-[2rem] p-6 sm:p-8">
+        <div class="grid gap-6 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+          <div>
+            <p class="text-sm font-medium tracking-wide text-cyan-100/55">Next Step</p>
+            <h2 class="mt-2 text-3xl font-semibold sm:text-4xl">Launch the new NodeBlk direction.</h2>
+            <p class="mt-4 max-w-2xl leading-8 text-white/70">This version is ready to use as a standalone NodeBlk site. Replace the placeholder images with your real renders and you will have a stronger, more futuristic presentation for demos, outreach, and investor conversations.</p>
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row lg:justify-end">
+            <a href="https://odotofrva.github.io/nodeblk/" target="_blank" rel="noopener noreferrer" class="rounded-full bg-cyan-300 px-6 py-3 text-center text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5">Current NodeBlk Link</a>
+            <a href="#home" class="rounded-full border border-cyan-300/20 px-6 py-3 text-center text-sm font-semibold text-cyan-100 transition hover:bg-white/5">Back to Top</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const revealItems = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    revealItems.forEach((item) => observer.observe(item));
+
+    const tabs = document.querySelectorAll('.spec-tab');
+    const views = document.querySelectorAll('.spec-view');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        views.forEach((v) => v.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.target).classList.add('active');
+      });
+    });
+
+    const glow = document.getElementById('cursorGlow');
+    window.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+  </script>
 </body>
 </html>
