@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NodeBlk — Off-Grid Communication for When Systems Fail</title>
+  <title>NodeBlk — OGD | RoboTechi Co.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Arial:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,10 +11,10 @@
     :root {
       --bg: #050805;
       --bg-soft: #0a120a;
-      --card: rgba(10,20,10,0.7);
-      --text: #eaffea;
-      --muted: #8aa38a;
-      --line: rgba(57,255,20,0.15);
+      --card: rgba(14,18,20,0.92);
+      --text: #ffffff;
+      --muted: #d2ddd2;
+      --line: rgba(57,255,20,0.18);
       --accent: #39ff14;
       --accent-2: #1f8f1f;
       --accent-3: #5a3b1a;
@@ -33,7 +33,7 @@
       background:
         radial-gradient(circle at top left, rgba(13,214,184,0.10), transparent 28%),
         radial-gradient(circle at top right, rgba(51,135,255,0.10), transparent 26%),
-        linear-gradient(180deg, #050805 0%, #0a120a 40%, #0f1a0f 100%);
+        linear-gradient(180deg, #060807 0%, #0b0f0d 42%, #111614 100%);
       overflow-x: hidden;
     }
 
@@ -420,7 +420,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      color: #dafef7;
+      color: #f4fff4;
       font-family: "Courier New", monospace;
     }
 
@@ -667,7 +667,7 @@
       position: absolute;
       padding: 10px 12px;
       border-radius: 999px;
-      background: rgba(255,255,255,.86);
+      background: rgba(14,18,20,.96);
       border: 1px solid rgba(11,18,32,.06);
       color: var(--muted);
       font-size: .85rem;
@@ -687,7 +687,7 @@
     .pilot-card,
     .quote-card {
       border-radius: 24px;
-      background: rgba(255,255,255,.8);
+      background: linear-gradient(180deg, rgba(22,27,30,.96), rgba(12,16,18,.96));
       border: 1px solid rgba(11,18,32,.06);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
       padding: 22px;
@@ -750,7 +750,7 @@
     .timeline-list li {
       padding: 18px 18px 18px 54px;
       border-radius: 20px;
-      background: rgba(255,255,255,.62);
+      background: linear-gradient(180deg, rgba(26,32,34,.96), rgba(16,20,22,.96));
       border: 1px solid rgba(11,18,32,.06);
       position: relative;
     }
@@ -876,6 +876,581 @@
       transform: translateY(0);
     }
 
+    
+    .photo-placeholder {
+      min-height: 220px;
+      border-radius: 24px;
+      border: 1px dashed rgba(57,255,20,.35);
+      background:
+        linear-gradient(180deg, rgba(57,255,20,.06), rgba(90,59,26,.12)),
+        repeating-linear-gradient(
+          45deg,
+          rgba(57,255,20,.04) 0 12px,
+          rgba(0,0,0,.08) 12px 24px
+        );
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      box-shadow: inset 0 0 30px rgba(57,255,20,.05);
+    }
+
+    .photo-placeholder strong {
+      display: block;
+      color: var(--text);
+      font-family: Orbitron, sans-serif;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .photo-placeholder small {
+      display: block;
+      max-width: 34ch;
+      line-height: 1.7;
+      font-size: .92rem;
+    }
+
+    .photo-placeholder.tall {
+      min-height: 100%;
+    }
+    .inserted-photo {
+      width: 100%;
+      min-height: 220px;
+      object-fit: cover;
+      border-radius: 24px;
+      border: 1px solid rgba(57,255,20,.18);
+      box-shadow: 0 0 28px rgba(57,255,20,.08);
+      display: block;
+      background: #071007;
+    }
+
+    .inserted-photo.hero-network {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      border-radius: 32px;
+      opacity: .32;
+      filter: saturate(1.05) brightness(.9);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .device-stage {
+      overflow: hidden;
+      border-radius: 32px;
+    }
+
+    .device-stage > *:not(.inserted-photo.hero-network) {
+      position: relative;
+      z-index: 1;
+    }
+
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(6,18,6,.72);
+      border: 1px solid rgba(57,255,20,.24);
+      box-shadow: 0 0 24px rgba(57,255,20,.08);
+      color: #dfffd7;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(57,255,20,.12), 0 0 16px rgba(57,255,20,.7);
+      animation: statusPulse 1.8s infinite ease-in-out;
+    }
+
+    .device-status {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 3;
+    }
+
+    .mini-status-panel {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      z-index: 2;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(5,16,13,0.76);
+      border: 1px solid rgba(57,255,20,.22);
+      color: #dfffd7;
+      font-family: "Courier New", monospace;
+      font-size: .76rem;
+      line-height: 1.6;
+      box-shadow: 0 0 22px rgba(57,255,20,.08);
+    }
+
+    .mini-status-panel strong {
+      color: var(--accent);
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: .7; }
+    }
+
+
+    
+    .copy,
+    .visual-box,
+    .timeline,
+    .cta-panel,
+    .impact-card,
+    .pilot-card,
+    .quote-card,
+    .bullet,
+    .stat {
+      background: linear-gradient(180deg, rgba(22,27,30,.96), rgba(12,16,18,.96));
+      border: 1px solid rgba(57,255,20,.14);
+      color: #ffffff;
+      box-shadow: 0 16px 40px rgba(0,0,0,.32);
+    }
+
+    .copy p,
+    .timeline p,
+    .timeline li,
+    .impact-card p,
+    .pilot-card p,
+    .quote-card p,
+    .bullet,
+    .stat-label,
+    .cta-panel p,
+    .nav-links a,
+    .eyebrow,
+    .section-kicker,
+    .splash p {
+      color: #d1ddd1;
+    }
+
+    .section-title,
+    .cta-title,
+    .impact-card h3,
+    .pilot-card h3,
+    .timeline h3,
+    .quote-card h3,
+    .bullet strong,
+    .stat-number,
+    .hero h1,
+    .splash h1,
+    .nav-brand,
+    .screen-ui strong {
+      color: #ffffff;
+    }
+
+    .hero p {
+      color: #d8e3d8;
+      text-shadow: 0 2px 12px rgba(0,0,0,.45);
+    }
+
+    .section-kicker {
+      color: #8dff78;
+    }
+
+    .eyebrow {
+      background: rgba(18,24,20,.86);
+      border: 1px solid rgba(57,255,20,.18);
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    .nav-cta,
+    .btn {
+      color: #041004;
+      background: linear-gradient(135deg, #7dff63, #39ff14);
+      box-shadow: 0 18px 34px rgba(57,255,20,.18);
+    }
+
+    .btn-secondary {
+      color: #ffffff;
+      background: rgba(20,24,26,.88);
+      border: 1px solid rgba(57,255,20,.18);
+    }
+
+    .btn:hover,
+    .btn-secondary:hover,
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .topbar {
+      background: rgba(10,12,12,0.84);
+      border-bottom: 1px solid rgba(57,255,20,.12);
+    }
+
+    .nav-chip {
+      background: linear-gradient(135deg, rgba(57,255,20,.22), rgba(90,59,26,.18));
+      color: #ffffff;
+      border: 1px solid rgba(57,255,20,.14);
+    }
+
+    .inserted-photo {
+      border: 1px solid rgba(57,255,20,.16);
+      box-shadow: 0 10px 28px rgba(0,0,0,.24);
+    }
+
+    .inserted-photo.hero-network {
+      opacity: .18;
+      filter: saturate(1.05) brightness(.72) blur(.3px);
+    }
+
+    .device-card {
+      box-shadow: 0 30px 70px rgba(0,0,0,.44), 0 0 50px rgba(57,255,20,.10);
+    }
+
+    .screen-bar,
+    .screen-msg,
+    .screen-footer,
+    .mini-status-panel,
+    .status-pill {
+      background: rgba(6,11,8,.86);
+      border: 1px solid rgba(57,255,20,.18);
+      color: #efffee;
+    }
+
+    .photo-placeholder {
+      color: #d1ddd1;
+      background:
+        linear-gradient(180deg, rgba(17,23,18,.9), rgba(11,15,12,.9)),
+        repeating-linear-gradient(
+          45deg,
+          rgba(57,255,20,.03) 0 12px,
+          rgba(0,0,0,.08) 12px 24px
+        );
+    }
+
+    .timeline-list li::before {
+      color: #041004;
+      background: linear-gradient(135deg, #7dff63, #39ff14);
+    }
+
+    .quote-card blockquote {
+      color: #ffffff;
+    }
+
+    .splash {
+      background:
+        radial-gradient(circle at center, rgba(57,255,20,0.08), transparent 25%),
+        linear-gradient(180deg, #0b0f0d 0%, #111614 100%);
+    }
+
+    .logo-mark {
+      background: linear-gradient(135deg, rgba(57,255,20,0.14), rgba(90,59,26,0.16));
+      border: 1px solid rgba(57,255,20,0.16);
+      color: #ffffff;
+    }
+
+    .enter-btn {
+      color: #041004;
+      background: linear-gradient(135deg, #7dff63, #39ff14);
+      box-shadow: 0 16px 32px rgba(57,255,20,.16);
+    }
+
+
+    
+    .topbar,
+    .copy,
+    .visual-box,
+    .timeline,
+    .cta-panel,
+    .impact-card,
+    .pilot-card,
+    .quote-card,
+    .bullet,
+    .stat,
+    .inserted-photo,
+    .device-card,
+    .nav-cta,
+    .btn,
+    .btn-secondary,
+    .status-pill,
+    .map-label,
+    .timeline-list li {
+      transition:
+        transform .28s ease,
+        box-shadow .28s ease,
+        border-color .28s ease,
+        background .28s ease,
+        filter .28s ease,
+        opacity .28s ease;
+    }
+
+    .copy:hover,
+    .visual-box:hover,
+    .timeline:hover,
+    .cta-panel:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 54px rgba(0,0,0,.38);
+      border-color: rgba(57,255,20,.24);
+    }
+
+    .bullet:hover,
+    .impact-card:hover,
+    .pilot-card:hover,
+    .stat:hover,
+    .timeline-list li:hover,
+    .map-label:hover,
+    .status-pill:hover {
+      transform: translateY(-4px);
+      border-color: rgba(125,255,99,.38);
+      box-shadow: 0 0 0 1px rgba(125,255,99,.14), 0 16px 36px rgba(0,0,0,.34), 0 0 30px rgba(57,255,20,.08);
+    }
+
+    .inserted-photo:hover {
+      transform: scale(1.015);
+      box-shadow: 0 18px 36px rgba(0,0,0,.34), 0 0 26px rgba(57,255,20,.08);
+      border-color: rgba(125,255,99,.28);
+      filter: saturate(1.03);
+    }
+
+    .device-card:hover .screen-bar,
+    .device-card:hover .screen-msg,
+    .device-card:hover .screen-footer,
+    .device-card:hover .mini-status-panel {
+      border-color: rgba(125,255,99,.28);
+      box-shadow: 0 0 24px rgba(57,255,20,.08);
+    }
+
+    .btn,
+    .btn-secondary,
+    .nav-cta,
+    .enter-btn {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .btn::after,
+    .btn-secondary::after,
+    .nav-cta::after,
+    .enter-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,.22) 50%, transparent 75%);
+      transform: translateX(-130%);
+      transition: transform .65s ease;
+      z-index: -1;
+    }
+
+    .btn:hover::after,
+    .btn-secondary:hover::after,
+    .nav-cta:hover::after,
+    .enter-btn:hover::after {
+      transform: translateX(130%);
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 4px;
+      transition: color .22s ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #7dff63, #39ff14);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform .24s ease;
+      box-shadow: 0 0 10px rgba(57,255,20,.24);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-kicker::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #39ff14;
+      box-shadow: 0 0 0 5px rgba(57,255,20,.09), 0 0 16px rgba(57,255,20,.42);
+      animation: kickerPulse 2.2s infinite ease-in-out;
+    }
+
+    .hero h1,
+    .section-title,
+    .cta-title {
+      text-wrap: balance;
+      letter-spacing: -0.028em;
+    }
+
+    .hero-copy,
+    .copy,
+    .cta-panel {
+      position: relative;
+    }
+
+    .hero-copy::after,
+    .copy::after,
+    .cta-panel::after {
+      content: "";
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 14px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(57,255,20,.18), transparent);
+      pointer-events: none;
+    }
+
+    .status-dot,
+    .eyebrow-dot,
+    .node::after {
+      will-change: transform, opacity;
+    }
+
+    @keyframes kickerPulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: .75; }
+    }
+
+
+    
+    /* Light-background section readability improvements */
+    .signal-map,
+    .impact-grid,
+    .pilot-grid {
+      background: linear-gradient(180deg, rgba(19,24,26,.98), rgba(12,16,18,.98));
+      border: 1px solid rgba(57,255,20,.12);
+    }
+
+    .map-label {
+      background: rgba(14,18,20,.96);
+      border: 1px solid rgba(57,255,20,.14);
+      color: #f5fff5;
+      box-shadow: 0 10px 24px rgba(0,0,0,.28);
+    }
+
+    .quote-card {
+      background: linear-gradient(180deg, rgba(24,31,28,.98), rgba(12,16,18,.98));
+    }
+
+    .impact-card h3,
+    .pilot-card h3,
+    .quote-card h3,
+    .timeline h3,
+    .copy h2,
+    .cta-panel h2 {
+      color: #ffffff;
+      text-shadow: 0 1px 0 rgba(0,0,0,.2);
+    }
+
+    .impact-card p,
+    .pilot-card p,
+    .quote-card p,
+    .timeline p,
+    .timeline li,
+    .copy p,
+    .cta-panel p {
+      color: #dde8dd;
+    }
+
+    .photo-placeholder strong,
+    .photo-placeholder small {
+      color: #eef8ee;
+    }
+
+    .visual-box {
+      background: linear-gradient(180deg, rgba(20,25,27,.98), rgba(10,14,16,.98));
+    }
+
+    .timeline-list li {
+      background: linear-gradient(180deg, rgba(26,32,34,.96), rgba(16,20,22,.96));
+      color: #eef8ee;
+    }
+
+    .timeline-list li strong {
+      color: #ffffff;
+    }
+
+    .screen-msg,
+    .screen-bar,
+    .screen-footer,
+    .mini-status-panel {
+      color: #f4fff4;
+    }
+
+    .hero-copy,
+    .copy,
+    .timeline,
+    .cta-panel {
+      backdrop-filter: blur(10px);
+    }
+
+    .section-kicker,
+    .eyebrow {
+      color: #e0f7dc;
+    }
+
+    .inserted-photo {
+      filter: brightness(.98) contrast(1.04);
+    }
+
+    .inserted-photo.hero-network {
+      opacity: .12;
+      filter: saturate(1) brightness(.58) blur(.2px);
+    }
+
+    .nav-brand,
+    .nav-links a,
+    footer,
+    footer div {
+      color: #eef8ee;
+    }
+
+    .status-pill {
+      color: #f4fff4;
+    }
+
+    .bullet {
+      color: #e2ece2;
+    }
+
+    .bullet strong {
+      color: #ffffff;
+    }
+
+    .hero p {
+      max-width: 60ch;
+    }
+
+
     @media (max-width: 980px) {
       .hero,
       .panel {
@@ -908,6 +1483,11 @@
 
       .nav-links {
         display: none;
+      }
+
+      .topbar-inner > div:last-child {
+        width: 100%;
+        justify-content: space-between;
       }
 
       .hero,
@@ -973,7 +1553,10 @@
         <a href="#impact">Impact</a>
         <a href="#pilot">Pilot</a>
       </div>
-      <a class="nav-cta" href="#cta">Support the Pilot</a>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div class="status-pill"><span class="status-dot"></span> Device Network Online</div>
+        <a class="nav-cta" href="#cta">Support the Pilot</a>
+      </div>
     </div>
   </div>
 
@@ -981,8 +1564,8 @@
     <section class="hero">
       <div class="hero-copy reveal visible">
         <div class="eyebrow"><span class="eyebrow-dot"></span> Community resilience, reimagined</div>
-        <h1>When systems fail, communities need their own signal.</h1>
-        <p>NodeBlk is an off-grid communication device and emergency information layer designed for neighborhoods hit hardest by outages, disasters, and infrastructure collapse. It was born from loss in Asheville after Hurricane Helene and rebuilt into a tool for collective resilience.</p>
+        <h1>When systems fail, we still need a way to reach each other.</h1>
+        <p>NodeBlk is built from real experience — not theory. After living through Hurricane Helene in Asheville, where power, communication, and stability disappeared at once, it became clear that communities need their own way to stay connected.<br><br>This is a device designed for that reality — simple, direct, and built to work when everything else doesn’t.</p>
         <div class="hero-actions">
           <a href="#story" class="btn">See the Story</a>
           <a href="#pilot" class="btn-secondary">View Pilot Plan</a>
@@ -1004,9 +1587,11 @@
       </div>
 
       <div class="device-stage reveal visible">
+        <img class="inserted-photo hero-network" src="a_digital_illustration_presents_an_abstract_visual.png" alt="Abstract communication network visualization for NodeBlk hero background">
         <div class="orb one"></div>
         <div class="orb two"></div>
         <div class="device-card" aria-label="NodeBlk concept device mockup">
+          <div class="device-status status-pill"><span class="status-dot"></span> Online</div>
           <div class="device-top">
             <div class="screen-grid"></div>
             <div class="screen-ui">
@@ -1022,6 +1607,11 @@
               <div class="screen-footer">
                 <span>Guide • Message • Alert</span>
                 <span>Battery 92%</span>
+              </div>
+              <div class="mini-status-panel">
+                <strong>SIGNAL STATUS</strong><br>
+                Mesh Link: ACTIVE<br>
+                Beacon Ping: 04s ago
               </div>
             </div>
           </div>
@@ -1042,10 +1632,10 @@
       <section class="panel" id="story">
         <div class="copy reveal">
           <div class="section-kicker">Origin</div>
-          <h2 class="section-title">Built from what was lost, not what was imagined.</h2>
-          <p>During Hurricane Helene in Asheville, the loss was not only physical. Home, car, personal belongings, and neighborhood stability were stripped away at once. But one of the deepest failures was communication itself.</p>
-          <p>When networks disappear, communities are pushed into isolation. Families cannot coordinate. Neighbors cannot organize. Information becomes fragmented right when it matters most.</p>
-          <p>NodeBlk began as a response to that reality: a device designed so communities are not left waiting on systems that can go dark.</p>
+          <h2 class="section-title">Built from what was experienced, not imagined.</h2>
+          <p>This didn’t start as a product idea. It started with loss.</p>
+          <p>After Hurricane Helene, everything changed at once — housing, transportation, daily structure, and most importantly, communication. When networks go down, people don’t just lose signal — they lose coordination, access to information, and the ability to check on each other.</p>
+          <p>NodeBlk comes from that moment. It’s a response to what happens when people are left without a reliable way to connect.</p>
           <div class="bullet-grid">
             <div class="bullet"><strong>Lived experience</strong>Born from surviving infrastructure collapse, not from a hypothetical scenario.</div>
             <div class="bullet"><strong>Community-first</strong>Designed for the people most likely to be hit first and served last.</div>
@@ -1054,6 +1644,8 @@
           </div>
         </div>
         <div class="visual reveal">
+          <div style="display:grid; gap:16px;">
+            <img class="inserted-photo" src="1.png" alt="Neighborhood after disaster with no electricity and subtle debris">
           <div class="timeline">
             <div class="section-kicker">From disruption to design</div>
             <h3>The path from crisis to solution</h3>
@@ -1064,23 +1656,27 @@
               <li data-step="04"><strong>NodeBlk created</strong><br>A resilient device concept focused on off-grid messaging, survival guidance, and local connection.</li>
             </ul>
           </div>
+          </div>
+          </div>
         </div>
       </section>
 
       <section class="panel reverse" id="solution">
         <div class="copy reveal">
           <div class="section-kicker">Solution</div>
-          <h2 class="section-title">A pocket-sized communication layer for when the grid is gone.</h2>
-          <p>NodeBlk uses long-range radio to create local messaging without relying on cellular service or internet access. It is designed to operate during outages, blackouts, disasters, and unstable conditions.</p>
-          <p>The device combines three essentials: message exchange, community alerts, and offline survival guidance. That makes it useful not only in emergencies, but during the long aftermath when coordination and information matter just as much.</p>
+          <h2 class="section-title">A simple way to stay connected when the grid goes down.</h2>
+          <p>NodeBlk is designed to work without relying on traditional infrastructure. No cell towers, no Wi-Fi, and no internet dependency.</p>
+          <p>It uses long-range communication to allow people nearby to send messages, share updates, and access important information. The goal isn’t complexity — it’s reliability when it matters most.</p>
           <div class="bullet-grid">
-            <div class="bullet"><strong>Direct messaging</strong>Send and receive text-based updates between nearby NodeBlk users.</div>
-            <div class="bullet"><strong>Broadcast alerts</strong>Share neighborhood-wide messages about aid, resources, and urgent conditions.</div>
-            <div class="bullet"><strong>Offline guides</strong>Store local survival info, emergency steps, and community resource instructions.</div>
-            <div class="bullet"><strong>Battery resilience</strong>Designed around low-power systems for extended use during outages.</div>
+            <div class="bullet"><strong>Direct messaging</strong>Send simple messages between nearby devices.</div>
+            <div class="bullet"><strong>Broadcast alerts</strong>Share updates across a neighborhood in real time.</div>
+            <div class="bullet"><strong>Offline guidance</strong>Access stored survival information without needing internet.</div>
+            <div class="bullet"><strong>Battery-aware design</strong>Built to run efficiently during extended outages.</div>
           </div>
         </div>
         <div class="visual reveal">
+          <div style="display:grid; gap:16px;">
+            <img class="inserted-photo" src="2.png" alt="NodeBlk-style rugged off-grid communication device product image">
           <div class="visual-box">
             <div class="signal-map">
               <div class="map-label" style="top: 12%; left: 12%;">Community Center</div>
@@ -1100,15 +1696,16 @@
               <div class="beam" style="top: 58%; left: 51%; width: 128px; transform: rotate(45deg);"></div>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
       <section class="panel" id="impact">
         <div class="copy reveal">
           <div class="section-kicker">Impact</div>
-          <h2 class="section-title">Not just a device. Community infrastructure.</h2>
-          <p>NodeBlk is designed to strengthen local resilience where conventional systems break down. It helps communities communicate faster, organize more clearly, and share critical information more directly.</p>
-          <p>This is especially important for under-resourced neighborhoods, shelters, mutual aid groups, churches, and families navigating uncertainty with limited support.</p>
+          <h2 class="section-title">This is about people, not just technology.</h2>
+          <p>NodeBlk is meant to support real situations — families checking in, neighbors organizing, and communities responding together.</p>
+          <p>In many cases, the people most affected by outages are the ones with the least access to reliable systems. This is built with that in mind.</p>
           <div class="bullet-grid">
             <div class="bullet"><strong>Reduces isolation</strong>Keeps people connected when traditional networks disappear.</div>
             <div class="bullet"><strong>Improves coordination</strong>Supports local distribution of information, supplies, and check-ins.</div>
@@ -1117,7 +1714,8 @@
           </div>
         </div>
         <div class="visual reveal">
-          <div class="visual-box">
+          <div style="display:grid; gap:16px;">
+            <div class="visual-box">
             <div class="impact-grid">
               <div class="impact-card">
                 <h3>Families</h3>
@@ -1136,10 +1734,14 @@
                 <p>Use a lightweight, accessible tool for last-mile communication and outreach.</p>
               </div>
               <div class="quote-card">
+                <img class="inserted-photo" src="3.png" alt="Community members distributing supplies during disaster recovery" style="min-height:340px;">
+              </div>
+              <div class="quote-card">
                 <blockquote>“NodeBlk is built so that connection does not disappear at the exact moment it becomes essential.”</blockquote>
                 <span>Community resilience through local signal ownership</span>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </section>
@@ -1147,9 +1749,9 @@
       <section class="panel reverse" id="pilot">
         <div class="copy reveal">
           <div class="section-kicker">Pilot</div>
-          <h2 class="section-title">Start with one neighborhood. Prove a new model.</h2>
-          <p>The first NodeBlk pilot can focus on a small, high-need deployment with community partners. The goal is to test usability, messaging reliability, and practical value during preparedness drills or communication-disrupted conditions.</p>
-          <p>This framing makes NodeBlk not only a product, but a deployable resilience program funders can support.</p>
+          <h2 class="section-title">Start small. Build something that actually works.</h2>
+          <p>The first step is a focused pilot — placing devices into real communities and learning from how they’re actually used.</p>
+          <p>This isn’t about scaling too early. It’s about getting it right at the ground level, then growing from there with intention.</p>
           <div class="bullet-grid">
             <div class="bullet"><strong>Initial deployment</strong>50 devices distributed across one to two pilot communities.</div>
             <div class="bullet"><strong>Core testing</strong>Messaging, alerts, guide access, and response coordination workflows.</div>
@@ -1158,6 +1760,8 @@
           </div>
         </div>
         <div class="visual reveal">
+          <div style="display:grid; gap:16px;">
+            <img class="inserted-photo" src="4.png" alt="NodeBlk network map for pilot deployment concept">
           <div class="visual-box">
             <div class="pilot-grid">
               <div class="pilot-card">
@@ -1189,8 +1793,8 @@
     <div class="cta-shell" id="cta">
       <section class="cta-panel reveal">
         <div class="section-kicker">Call to action</div>
-        <h2 class="cta-title">Help build the next layer of community resilience.</h2>
-        <p>NodeBlk is a direct response to disaster, displacement, and communication failure. With grant support, it can move from prototype to pilot and begin serving the neighborhoods that need resilient tools the most. This is not just about hardware. It is about restoring local power, local coordination, and local connection.</p>
+        <h2 class="cta-title">Help bring this into the communities that need it most.</h2>
+        <p>NodeBlk is built from lived experience and designed for real-world conditions. With support, it can move from concept to deployment — starting with small pilots and growing into something that communities can depend on.<br><br>This is about making sure people have a way to stay connected when it matters most.</p>
         <div class="hero-actions" style="justify-content:center; margin-bottom:0; position:relative; z-index:1;">
           <a class="btn" href="mailto:hello@example.com?subject=NodeBlk%20Pilot%20Interest">Fund the Pilot</a>
           <a class="btn-secondary" href="mailto:hello@example.com?subject=NodeBlk%20Partnership">Partner with NodeBlk</a>
@@ -1199,9 +1803,9 @@
     </div>
   </main>
 
-  <footer>
+  <footer style="color:#eef8ee; border-top:1px solid rgba(57,255,20,.14); padding-top:24px;">
     <div>NodeBlk by RoboTechi Co. / OdotNYC</div>
-    <div>Off-grid communications.</div>
+    <div>Off-grid communication for when systems fail.</div>
   </footer>
 
   <script>
@@ -1224,6 +1828,28 @@
     }, { threshold: 0.16 });
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    const interactiveCards = document.querySelectorAll('.bullet, .impact-card, .pilot-card, .stat, .timeline-list li');
+    interactiveCards.forEach((card) => {
+      card.addEventListener('mousemove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const rotateY = ((x / rect.width) - 0.5) * 4;
+        const rotateX = ((y / rect.height) - 0.5) * -4;
+        card.style.transform = `translateY(-4px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    const heroImage = document.querySelector('.inserted-photo.hero-network');
+    window.addEventListener('scroll', () => {
+      if (!heroImage) return;
+      const offset = Math.min(window.scrollY * 0.06, 18);
+      heroImage.style.transform = `scale(1.02) translateY(${offset}px)`;
+    });
   </script>
 </body>
 </html>
